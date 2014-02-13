@@ -1,9 +1,9 @@
-package
+package com
 {
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
-	import com.manage.Game;
+	import com.game.Game;
 	
 	import starling.core.Starling;
 	

@@ -1,6 +1,5 @@
-package com.manage
+package com.game
 {
-	import com.actors.Cannon;
 	
 	import starling.display.Sprite;
 	

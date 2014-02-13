@@ -1,4 +1,4 @@
-package com.actors
+package com.game
 {
 	import starling.display.Quad;
 	import starling.display.Sprite;
