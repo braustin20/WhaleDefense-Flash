@@ -7,7 +7,7 @@ package
 	
 	import starling.core.Starling;
 	
-	[SWF(width="400", height="300", frameRate="60", backgroundColor="#000000")]
+	[SWF(width="1280", height="720", frameRate="60", backgroundColor="#000000")]
 	public class whaleDefense extends Sprite
 	{
 		private var mStarling:Starling;
