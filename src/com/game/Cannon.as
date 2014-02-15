@@ -77,7 +77,7 @@ package com.game
 			//Get the angle of the line
 			var t:Number = Math.atan(-1 / ((pointB.y - pointA.y) / (pointB.x - pointA.x)));
 			
-			//Place a point h distance above the midpoint
+			//Place a point h distance above the midpoint dependant on line angle
 			var controlPoint:Point = new Point(Math.cos(t) * h + midX, Math.sin(t) * h + midY);
 			
 			return controlPoint; 
