@@ -12,61 +12,61 @@ package com.game
 	public class Cannon extends Sprite
 	{
 		private var graphics:Quad;
-		private var bullet:Bullet;
+		private var playerProjectile:PlayerProjectile;
 		private var arcArray:Array;
 		
 		public var arcHeight:Number;
-		public var fireSpeed:Number;
+		public var fireDuration:Number;
 		
 		public function Cannon()
 		{
 			this.x = 300;
-			this.y = 150;
+			this.y = 50;
 			
 			arcHeight = 200;
-			fireSpeed = 1;
+			fireDuration = 1;
 			
 			//Placeholder sprite
-			graphics = new Quad(100, 100, Color.RED);
+			graphics = new Quad(30, 40, Color.RED);
 			//Move the sprite so that it's centered
-			graphics.x = this.x - graphics.width/2;
-			graphics.y = this.y - graphics.height/2;
+			graphics.x -= graphics.width/2;
+			graphics.y -= graphics.height/2;
 			addChild(graphics);
 			
 		}
 		
 		public function shootBullet(touchLoc:Point):void{
-			//Add a bullet relative to this cannon
-			bullet = new Bullet(this.x, this.y);
+			//Add a playerProjectile relative to this cannon
+			playerProjectile = new PlayerProjectile(0, 0);
 			
 			
-			
-			stage.addChild(bullet);
+			addChild(playerProjectile);
 			
 			//Calculate the mid control point for the bezier arc
-			var controlPoint:Point = getControl(new Point(bullet.x, bullet.y), touchLoc, arcHeight);
+			var controlPoint:Point = getControl(new Point(playerProjectile.x, playerProjectile.y), touchLoc, arcHeight);
 			
 			//Assemble the anchors and control point into an array for brevity
-			arcArray = [new Point(bullet.x, bullet.y), controlPoint, touchLoc];
+			arcArray = [new Point(playerProjectile.x, playerProjectile.y), controlPoint, touchLoc];
 			
-			//--------Debug point display-------------
-			var targ:Quad = new Quad(5, 5, Color.AQUA);
+			//--------Debug bezier point display-------------
+			/*var targ:Quad = new Quad(5, 5, Color.AQUA);
 			targ.x = controlPoint.x;
 			targ.y = controlPoint.y;
 			addChild(targ);
 			
 			var targ2:Quad = new Quad(5, 5, Color.AQUA);
-			targ2.x = bullet.x;
-			targ2.y = bullet.y;
+			targ2.x = playerProjectile.x;
+			targ2.y = playerProjectile.y;
 			addChild(targ2);
 			
 			var targ3:Quad = new Quad(5, 5, Color.AQUA);
 			targ3.x = touchLoc.x;
 			targ3.y = touchLoc.y;
-			addChild(targ3);
+			addChild(targ3);*/
 			
-			//Fire the bullet along a bezier curve
-			TweenMax.to(bullet, fireSpeed, {bezier:{values:arcArray, type:"quadratic"}, ease:Linear.easeOut, onComplete:bullet.destroy});		
+			//Fire the playerProjectile along a bezier curve
+			//Set onCompleteParams to signify that this is a player's shot
+			TweenMax.to(playerProjectile, fireDuration, {bezier:{values:arcArray, type:"quadratic"}, ease:Linear.easeOut, onComplete:playerProjectile.destroy, onCompleteParams:[true]});		
 		}
 		//Used to calculate the correct control point between two bezier anchors
 		private function getControl(pointA:Point, pointB:Point, h:Number):Point{

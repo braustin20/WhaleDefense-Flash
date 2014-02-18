@@ -7,7 +7,6 @@ package com
 	import flash.display.StageScaleMode;
 	
 	import starling.core.Starling;
-	import starling.events.TouchEvent;
 	
 	[SWF(width="1280", height="720", frameRate="60", backgroundColor="#000000")]
 	public class whaleDefense extends Sprite
