@@ -5,6 +5,7 @@ package com.levels
 	import com.game.Enemy;
 	import com.game.EnemySpawner;
 	import com.game.GenericProjectile;
+	import com.game.Shore;
 	
 	import flash.geom.Point;
 	
@@ -21,6 +22,9 @@ package com.levels
 		private var newCannon:Cannon;
 		public var selectedCannon:Cannon;
 		
+		private var shoreList:Array;
+		private var newShore:Shore;
+		
 		public var enemySpawner:EnemySpawner;
 		
 		//Placeholder
@@ -36,16 +40,34 @@ package com.levels
 			newCannon = new Cannon();
 			addChild(newCannon);
 			
-			//Create the enemy spawner
-			enemySpawner = new EnemySpawner();
-			addChild(enemySpawner);
+			
 			
 			//Set the last created cannon as the current selected 
 			//replace this later with mouse selection
 			selectedCannon = newCannon;
 			
+			shoreList = new Array();
+			
+			//Spawn some shores
+			newShore = new Shore(800, 50);
+			addChild(newShore);
+			shoreList.push(newShore);
+			
+			newShore = new Shore(100, 50);
+			addChild(newShore);
+			shoreList.push(newShore);
+			
+			newShore = new Shore(400, 50);
+			addChild(newShore);
+			shoreList.push(newShore);
+			
 			//Add listener which waits for stage creation
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			
+			//Create the enemy spawner
+			enemySpawner = new EnemySpawner(shoreList);
+			addChild(enemySpawner);
+			
 		}
 		//Once the stage is created, add the remaining listeners
 		public function onAddedToStage(event:Event):void{		
@@ -88,6 +110,9 @@ package com.levels
 				var touchLoc:Point = touchDown.getLocation(selectedCannon);
 				selectedCannon.shootBullet(touchLoc);
 			}
+		}
+		public function get shores():Array{
+			return this.shoreList;
 		}
 	}
 }
