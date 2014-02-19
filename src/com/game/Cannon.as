@@ -12,11 +12,11 @@ package com.game
 	public class Cannon extends Sprite
 	{
 		private var graphics:Quad;
-		private var playerProjectile:PlayerProjectile;
+		private var newPlayerProjectile:PlayerProjectile;
 		private var arcArray:Array;
 		
 		public var arcHeight:Number;
-		public var fireDuration:Number;
+		public var velocity:Number;
 		
 		public function Cannon()
 		{
@@ -24,7 +24,7 @@ package com.game
 			this.y = 50;
 			
 			arcHeight = 200;
-			fireDuration = 1;
+			velocity = 900;
 			
 			//Placeholder sprite
 			graphics = new Quad(30, 40, Color.RED);
@@ -36,17 +36,17 @@ package com.game
 		}
 		
 		public function shootBullet(touchLoc:Point):void{
-			//Add a playerProjectile relative to this cannon
-			playerProjectile = new PlayerProjectile(0, 0);
+			//Add a newPlayerProjectile relative to this cannon
+			newPlayerProjectile = new PlayerProjectile(0, 0);
 			
+			addChild(newPlayerProjectile);
 			
-			addChild(playerProjectile);
 			
 			//Calculate the mid control point for the bezier arc
-			var controlPoint:Point = getControl(new Point(playerProjectile.x, playerProjectile.y), touchLoc, arcHeight);
+			var controlPoint:Point = getControl(new Point(newPlayerProjectile.x, newPlayerProjectile.y), touchLoc, calculateArcHeight(touchLoc));
 			
 			//Assemble the anchors and control point into an array for brevity
-			arcArray = [new Point(playerProjectile.x, playerProjectile.y), controlPoint, touchLoc];
+			arcArray = [new Point(newPlayerProjectile.x, newPlayerProjectile.y), controlPoint, touchLoc];
 			
 			//--------Debug bezier point display-------------
 			/*var targ:Quad = new Quad(5, 5, Color.AQUA);
@@ -55,8 +55,8 @@ package com.game
 			addChild(targ);
 			
 			var targ2:Quad = new Quad(5, 5, Color.AQUA);
-			targ2.x = playerProjectile.x;
-			targ2.y = playerProjectile.y;
+			targ2.x = newPlayerProjectile.x;
+			targ2.y = newPlayerProjectile.y;
 			addChild(targ2);
 			
 			var targ3:Quad = new Quad(5, 5, Color.AQUA);
@@ -64,9 +64,9 @@ package com.game
 			targ3.y = touchLoc.y;
 			addChild(targ3);*/
 			
-			//Fire the playerProjectile along a bezier curve
+			//Fire the newPlayerProjectile along a bezier curve
 			//Set onCompleteParams to signify that this is a player's shot
-			TweenMax.to(playerProjectile, fireDuration, {bezier:{values:arcArray, type:"quadratic"}, ease:Linear.easeOut, onComplete:playerProjectile.destroy, onCompleteParams:[true]});		
+			TweenMax.to(newPlayerProjectile, velocityToDuration(touchLoc), {bezier:{values:arcArray, type:"quadratic"}, ease:Linear.easeOut, onComplete:newPlayerProjectile.destroy, onCompleteParams:[true]});		
 		}
 		//Used to calculate the correct control point between two bezier anchors
 		private function getControl(pointA:Point, pointB:Point, h:Number):Point{
@@ -81,6 +81,26 @@ package com.game
 			var controlPoint:Point = new Point(Math.cos(t) * h + midX, Math.sin(t) * h + midY);
 			
 			return controlPoint; 
+		}
+		//Calculates duration in seconds from a given speed
+		private function velocityToDuration(p2:Point):Number{
+			var duration:Number;
+			var p1:Point = new Point(newPlayerProjectile.x, newPlayerProjectile.y);
+			
+			var distance:Number = Point.distance(p1, p2);
+			
+			duration = Math.abs(distance/velocity);
+			return duration;
+		}
+		//Rough control over arc height dependant on distance
+		private function calculateArcHeight(p2:Point):Number{
+			var tempArcHeight:Number;
+			var p1:Point = new Point(newPlayerProjectile.x, newPlayerProjectile.y);
+			
+			var distance:Number = Point.distance(p1, p2);
+			tempArcHeight = Math.floor(distance/3)
+
+			return tempArcHeight;
 		}
 	}
 }

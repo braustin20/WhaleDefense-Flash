@@ -3,6 +3,8 @@ package com.game
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Linear;
 	
+	import flash.geom.Point;
+	
 	import starling.display.Sprite;
 
 	
@@ -33,7 +35,11 @@ package com.game
 			//For now, just find a random shore and go to it, later will sophisticate
 			var rand:Number;
 			rand = Math.floor(Math.random() * (1 + (shores.length - 1))) + 0;
-			TweenMax.to(enemy, 8, {x:shores[rand].x, y:shores[rand].y, ease:Linear.easeNone});
+			
+			//Save the chosen shore into the enemy
+			enemy.targetShore = shores[rand];
+			
+			TweenMax.to(enemy, velocityToDuration(enemy), {x:enemy.targetShore.x, y:enemy.targetShore.y, ease:Linear.easeNone});
 		}
 		public function createEnemy(xPos:Number, yPos:Number):void{
 			newEnemy = new Enemy(xPos, yPos);
@@ -46,6 +52,17 @@ package com.game
 		}
 		public function get enemiesList():Array{
 			return enemyList;
+		}
+		//Calculates duration in seconds from a given speed
+		private function velocityToDuration(enemy:Enemy):Number{
+			var duration:Number;
+			var p1:Point = new Point(enemy.x, enemy.y);
+			var p2:Point = new Point(enemy.targetShore.x, enemy.targetShore.y);
+			
+			var distance:Number = Point.distance(p1, p2);
+			
+			duration = Math.abs(distance/enemy.speed);
+			return duration;
 		}
 	}
 }

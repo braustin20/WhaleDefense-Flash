@@ -8,11 +8,16 @@ package com.game
 	{
 		public var graphics:Quad;
 		public var listIndex:Number;
+		public var targetShore:Shore;
+		public var speed:Number;
 	
 		public function Enemy(xPos:Number, yPos:Number)
 		{
 			this.x = xPos;
-			this.y = yPos;			
+			this.y = yPos;	
+			
+			//Set speed hard coded for now
+			speed = 100;
 			
 			//Placeholder sprite
 			graphics = new Quad(30, 30, Color.YELLOW);
