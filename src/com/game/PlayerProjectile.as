@@ -13,7 +13,7 @@ package com.game
 			
 			
 			//Placeholder sprite
-			graphics = new Quad(10, 10, Color.BLUE);
+			graphics = new Quad(20, 20, Color.BLUE);
 			//Move the sprite so that it's centered
 			graphics.x -= graphics.width/2;
 			graphics.y -= graphics.height/2;

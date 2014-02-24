@@ -1,34 +1,45 @@
 package com.levels
 {
+	import com.events.ProjectileFired;
 	import com.events.ProjectileHit;
+	import com.game.Base;
 	import com.game.Cannon;
 	import com.game.Enemy;
 	import com.game.EnemySpawner;
 	import com.game.GenericProjectile;
+	import com.game.Ocean;
 	import com.game.Shore;
+	import com.greensock.motionPaths.LinePath2D;
 	
+	import flash.events.TimerEvent;
 	import flash.geom.Point;
+	import flash.utils.Timer;
 	
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	import starling.events.Touch;
-	import starling.events.TouchEvent;
-	import starling.events.TouchPhase;
 	import starling.utils.Color;
 	
 	public class Level1 extends Sprite
 	{
+		public var levelBase:Base;
+		
 		private var newCannon:Cannon;
 		public var selectedCannon:Cannon;
 		
 		private var shoreList:Array;
 		private var newShore:Shore;
+		private var newPath:LinePath2D;
+		public var pathArray:Array;
+		
+		private var isSpawning:Boolean;
 		
 		public var enemySpawner:EnemySpawner;
 		
 		//Placeholder
 		private var background:Quad;
+		
+		private var ocean:Ocean;
 		
 		public function Level1(width:Number, height:Number)
 		{
@@ -36,11 +47,15 @@ package com.levels
 			background = new Quad(width, height, Color.GRAY);
 			addChild(background);
 			
+			ocean = new Ocean();
+			addChild(ocean);
+			
 			//Create a new cannon
-			newCannon = new Cannon();
+			newCannon = new Cannon(300, 50);
 			addChild(newCannon);
 			
-			
+			levelBase = new Base(600, 50);
+			addChild(levelBase);
 			
 			//Set the last created cannon as the current selected 
 			//replace this later with mouse selection
@@ -49,37 +64,112 @@ package com.levels
 			shoreList = new Array();
 			
 			//Spawn some shores
-			newShore = new Shore(800, 50);
+			newShore = new Shore(800, 200);
 			addChild(newShore);
 			shoreList.push(newShore);
 			
-			newShore = new Shore(100, 50);
-			addChild(newShore);
-			shoreList.push(newShore);
-			
-			newShore = new Shore(400, 50);
+			newShore = new Shore(400, 200);
 			addChild(newShore);
 			shoreList.push(newShore);
 			
 			//Add listener which waits for stage creation
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 			
+			
 			//Create the enemy spawner
-			enemySpawner = new EnemySpawner(shoreList);
+			enemySpawner = new EnemySpawner(shoreList, generatePaths(), levelBase);
 			addChild(enemySpawner);
 			
 		}
+		//Called each frame
+		public function onUpdate():void{
+			if(enemySpawner.enemiesList.length < 10 && !isSpawning){
+				isSpawning = true;
+				var spawnTimer:Timer = new Timer(750, 1);
+				spawnTimer.addEventListener(TimerEvent.TIMER, timedSpawn);
+				spawnTimer.start();
+			}
+		}
+		//Tell the enemy spawner to spawn a single enemy
+		public function timedSpawn(event:TimerEvent):void{
+			isSpawning = false;
+			enemySpawner.createEnemy();
+		}
+		//May want to condense
+		public function generatePaths():Array{
+			pathArray = new Array();
+			
+			//Make your paths here, the more the better.
+			newPath = new LinePath2D([new Point(100, 700),
+				new Point(200, 400),
+				new Point(400, 300),
+				new Point(shores[0].x, shores[0].y)]);
+			pathArray.push(newPath);
+
+			newPath = new LinePath2D([new Point(400, 700),
+				new Point(400, 400),
+				new Point(500, 360),
+				new Point(shores[0].x, shores[0].y)]);
+			pathArray.push(newPath);
+			
+			newPath = new LinePath2D([new Point(500, 700),
+				new Point(240, 420),
+				new Point(300, 310),
+				new Point(shores[0].x, shores[1].y)]);
+			pathArray.push(newPath);
+			
+			newPath = new LinePath2D([new Point(1000, 700),
+				new Point(840, 420),
+				new Point(900, 310),
+				new Point(shores[0].x, shores[1].y)]);
+			pathArray.push(newPath);
+			
+			newPath = new LinePath2D([new Point(100, 700),
+				new Point(200, 400),
+				new Point(400, 300),
+				new Point(shores[1].x, shores[1].y)]);
+			pathArray.push(newPath);
+			
+			newPath = new LinePath2D([new Point(400, 700),
+				new Point(400, 400),
+				new Point(500, 360),
+				new Point(shores[1].x, shores[1].y)]);
+			pathArray.push(newPath);
+			
+			newPath = new LinePath2D([new Point(500, 700),
+				new Point(240, 420),
+				new Point(300, 310),
+				new Point(shores[1].x, shores[1].y)]);
+			pathArray.push(newPath);
+			
+			newPath = new LinePath2D([new Point(1000, 700),
+				new Point(840, 420),
+				new Point(900, 310),
+				new Point(shores[1].x, shores[1].y)]);
+			pathArray.push(newPath);
+			
+			return pathArray;
+		}
+		
 		//Once the stage is created, add the remaining listeners
 		public function onAddedToStage(event:Event):void{		
-			//Input listeners
-			//Add listener for any touch/mouse event
-			this.addEventListener(TouchEvent.TOUCH, onTouch);
-			
 			//Add player projectile hit listener
 			stage.addEventListener(ProjectileHit.HIT, onProjectileHit);
 			
+			//Add player projectile fire listener
+			stage.addEventListener(ProjectileFired.FIRED, onProjectileFired);
+			
+			//Used for game loop
+			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
+			
 			//Remove the uneeded stage creation listener
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+		}
+		//Called when a shot has been fired into an object which accepts shots
+		private function onProjectileFired(event:ProjectileFired):void{
+			var touchLoc:Point = event.touch.getLocation(selectedCannon);
+			
+			selectedCannon.shootBullet(touchLoc);
 		}
 		//This is typically called when a player bullet finishes it's animation
 		public function onProjectileHit(event:ProjectileHit):void{
@@ -92,23 +182,24 @@ package com.levels
 				for each (var enemy:Enemy in enemySpawner.enemiesList){
 					//If the sprites intersect, destroy the ship
 					if(tempProjectile.getBounds(stage).intersects(enemy.getBounds(stage))){
-						enemy.destroy();
-						
-						//After the enemy has been destroyed, find it's index and remove it from the array of enemies
-						var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
-						enemySpawner.enemiesList.splice(enemyIndex, 1);
+						//Check to see if it has reached the shore or not yet
+						if(enemy.canDamage){
+							
+							//Set the enemy to dead, so that they don't make a path to the base
+							enemy.isDead = true;
+							
+							//Find it's index and remove it from the array of enemies
+							var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
+							enemySpawner.enemiesList.splice(enemyIndex, 1);
+							
+							//Remove the tween this enemy is attached to
+							enemySpawner.enemyPaths[enemy.targetPath].removeFollower(enemy.attachedFollower);
+							
+							//Destroy the enemy
+							enemy.destroy();
+						}
 					}
 				}
-			}
-		}
-		
-		public function onTouch(event:TouchEvent):void{
-			//Touch data when clicked or tapped down
-			var touchDown:Touch = event.getTouch(this, TouchPhase.BEGAN);
-			//If tapped or clicked, test fire the current cannon at the cursor location
-			if (touchDown){
-				var touchLoc:Point = touchDown.getLocation(selectedCannon);
-				selectedCannon.shootBullet(touchLoc);
 			}
 		}
 		public function get shores():Array{

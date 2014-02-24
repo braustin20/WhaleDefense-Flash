@@ -18,13 +18,13 @@ package com.game
 		public var arcHeight:Number;
 		public var velocity:Number;
 		
-		public function Cannon()
+		public function Cannon(xPos:Number, yPos:Number)
 		{
-			this.x = 300;
-			this.y = 50;
+			this.x = xPos;
+			this.y = yPos;
 			
 			arcHeight = 200;
-			velocity = 900;
+			velocity = 1750;
 			
 			//Placeholder sprite
 			graphics = new Quad(30, 40, Color.RED);

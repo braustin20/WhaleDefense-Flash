@@ -1,8 +1,6 @@
 package com.game
-{	
+{
 	import com.events.ProjectileFired;
-	import com.greensock.motionPaths.PathFollower;
-	
 	
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -12,41 +10,22 @@ package com.game
 	import starling.events.TouchPhase;
 	import starling.utils.Color;
 	
-	public class Enemy extends Sprite
+	public class Ocean extends Sprite
 	{
-		public var graphics:Quad;
-		public var listIndex:Number;
-		//A reference to the path this enemy is following
-		public var targetPath:Number;
-		public var speed:Number;
+		private var graphics:Quad;
 		
-		//The follower object which tracks motion paths
-		public var attachedFollower:PathFollower;
-		
-		public var canDamage:Boolean;
-		public var isDead:Boolean;
-	
-		public function Enemy(xPos:Number, yPos:Number)
+		public function Ocean()
 		{
-			this.x = xPos;
-			this.y = yPos;	
-			
-			//Set speed hard coded for now
-			speed = 100;
+			this.x = 0;
+			this.y = 200;
 			
 			//Placeholder sprite
-			graphics = new Quad(30, 30, Color.YELLOW);
-			//Move the sprite so that it's centered
-			graphics.x -= graphics.width/2;
-			graphics.y -= graphics.height/2;
+			graphics = new Quad(1280, 520, Color.TEAL);
+
 			addChild(graphics);
 			
 			//Add listener which waits for stage creation
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-		}
-		public function destroy():void{
-			this.removeFromParent(true);
-			super.dispose();
 		}
 		private function onAddedToStage():void{
 			//Input listeners
