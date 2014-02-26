@@ -6,7 +6,8 @@
 .project
 .metadata
 bin/
-bin-debug/
+whaleDefense/bin-debug/
+whaleDefense_web/bin-debug/
 tmp/
 *.tmp
 *.bak
@@ -14,7 +15,8 @@ tmp/
 *~.nib
 local.properties
 .classpath
-.settings/
+whaleDefense/.settings/
+whaleDefense_web/.settings/
 .loadpath
 
 # External tool builders
