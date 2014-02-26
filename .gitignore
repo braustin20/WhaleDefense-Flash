@@ -8,6 +8,7 @@
 bin/
 whaleDefense/bin-debug/
 whaleDefense_web/bin-debug/
+whaleDefense_web/html-template/
 tmp/
 *.tmp
 *.bak

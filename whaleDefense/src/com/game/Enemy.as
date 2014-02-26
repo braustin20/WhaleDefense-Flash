@@ -57,7 +57,7 @@ package com.game
 			//Touch data when clicked or tapped down
 			var touchDown:Touch = event.getTouch(this, TouchPhase.BEGAN);
 			//If tapped or clicked, test fire the current cannon at the cursor location
-			if (touchDown){
+			if (touchDown && canDamage){
 				//Dispatch the event and denote who was the shooter
 				dispatchEvent(new ProjectileFired(ProjectileFired.FIRED, touchDown, true, true));
 			}
