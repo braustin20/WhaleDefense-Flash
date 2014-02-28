@@ -8,6 +8,9 @@ package com.game
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.utils.Color;
+	import com.greensock.plugins.TweenPlugin;
+	import com.greensock.plugins.BezierThroughPlugin; 
+	
 
 	public class Cannon extends Sprite
 	{
@@ -17,6 +20,8 @@ package com.game
 		
 		public var arcHeight:Number;
 		public var velocity:Number;
+		
+		TweenPlugin.activate([BezierThroughPlugin]);
 		
 		public function Cannon(xPos:Number, yPos:Number)
 		{
@@ -66,7 +71,7 @@ package com.game
 			
 			//Fire the newPlayerProjectile along a bezier curve
 			//Set onCompleteParams to signify that this is a player's shot
-			TweenMax.to(newPlayerProjectile, velocityToDuration(touchLoc), {bezier:{values:arcArray, type:"quadratic"}, ease:Linear.easeOut, onComplete:newPlayerProjectile.destroy, onCompleteParams:[true]});		
+			TweenMax.to(newPlayerProjectile, velocityToDuration(touchLoc), {bezier:{values:arcArray, type:"quadratic"}, orientToBezier:[["x", "y", "rotation", 0, 1]], ease:Linear.easeOut, onComplete:newPlayerProjectile.destroy, onCompleteParams:[true]});		
 		}
 		//Used to calculate the correct control point between two bezier anchors
 		private function getControl(pointA:Point, pointB:Point, h:Number):Point{

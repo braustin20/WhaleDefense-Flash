@@ -15,13 +15,14 @@ package com.game
 	public class Enemy extends Sprite
 	{
 		public var graphics:Quad;
+		public var graphics2:Quad;
 		public var listIndex:Number;
 		//A reference to the path this enemy is following
 		public var targetPath:Number;
 		public var speed:Number;
 		
-		//The follower object which tracks motion paths
-		public var attachedFollower:PathFollower;
+		public var damage: Number;
+		
 		
 		public var canDamage:Boolean;
 		public var isDead:Boolean;
@@ -31,15 +32,24 @@ package com.game
 			this.x = xPos;
 			this.y = yPos;	
 			
-			//Set speed hard coded for now
-			speed = 100;
+			//Set speed and damage hard coded for now
+			speed = 120;
+			damage = 15;
 			
 			//Placeholder sprite
-			graphics = new Quad(30, 30, Color.YELLOW);
+			graphics = new Quad(30, 40, Color.YELLOW);
 			//Move the sprite so that it's centered
 			graphics.x -= graphics.width/2;
 			graphics.y -= graphics.height/2;
 			addChild(graphics);
+			graphics.rotation = 1.5;
+			
+			//Placeholder sprite
+			graphics2 = new Quad(5, 5, Color.GREEN);
+			//Move the sprite so that it's centered
+			graphics.x = this.x;
+			graphics.y = this.y;
+			addChild(graphics2);
 			
 			//Add listener which waits for stage creation
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);

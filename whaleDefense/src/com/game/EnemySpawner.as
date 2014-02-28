@@ -2,7 +2,6 @@ package com.game
 {	
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Linear;
-	import com.greensock.motionPaths.LinePath2D;
 	import com.greensock.motionPaths.PathFollower;
 	
 	import flash.geom.Point;
@@ -23,56 +22,37 @@ package com.game
 			//Create the list to store enemies
 			enemyList = new Array();
 			
+			//List of landing areas
 			shores = shoreList;
 			
+			//Pairs of x and y variabes representing a bezier
 			enemyPaths = paths;
 			
+			//The player's base
 			levelBase = mBase;
-			
 			
 			//Create enemies (will sophisticate later)
 			createEnemy();
-	//		createEnemy(200, 600);
-	//		createEnemy(300, 600);
-	//		createEnemy(400, 600);
-	//		createEnemy(500, 600);
-	//		createEnemy(600, 600);
-			
-			//testPath.distribute(enemyList, 0, .8, true, 0);
-			
-			//animatePath();
-			
-			
-		}
-		public function animatePath():void{
-			//TweenMax.to(testPath, 20, {progress:1, onComplete:testPath.removeFollower(});
 			
 		}
 		public function createEnemyPath(enemy:Enemy):void{
-			//For now, just find a random shore and go to it, later will sophisticate
-			/*var rand:Number;
-			rand = Math.floor(Math.random() * (1 + (shores.length - 1))) + 0;
-			
-			//Save the chosen shore into the enemy
-			enemy.targetShore = shores[rand];
-			
-			TweenMax.to(enemy, velocityToDuration(enemy), {x:enemy.targetShore.x, y:enemy.targetShore.y, ease:Linear.easeNone});*/
-			//testPath.addFollower(enemy, 0, true, 0);
-			
+			//Pick a random path to follow
 			var rand:Number = Math.floor(Math.random() * (1 + (enemyPaths.length - 1))) + 0;
 			enemy.targetPath = rand;
 			
-			//var follower:PathFollower = enemyPaths[rand].addFollower(enemy, 0, true, 0);
-			enemy.attachedFollower = enemyPaths[rand].addFollower(enemy, 0, true, 0);
-			TweenMax.to(enemy.attachedFollower, velocityToDuration(enemy), {progress:1, ease:Linear.easeNone, onComplete:removeFromShorePath, onCompleteParams:[enemy.attachedFollower, enemy]});
-		}
-		public function createEnemy():void{
-			//var rand:Number = Math.floor(Math.random() * (1 + (enemyPaths.length - 1))) + 0;
+			//Move the enemy to the start of the bezier path
+			enemy.x = enemyPaths[rand][0].x;
+			enemy.y = enemyPaths[rand][0].y;
 			
+			//Tween along the bezier, orienting the angle along the way with a static speed
+			TweenMax.to(enemy, velocityToDuration(enemy), {bezierThrough:enemyPaths[rand], orientToBezier:[["x", "y", "rotation", 0, 1]], ease:Linear.easeNone, onComplete:removeFromShorePath, onCompleteParams:[enemy]});
+		}
+		public function createEnemy():void{			
 			newEnemy = new Enemy(0, 0);
 			newEnemy.canDamage = true;
 			
 			addChild(newEnemy);
+			
 			//Add the enemy to the enemy list
 			enemyList.push(newEnemy);
 			newEnemy.listIndex = enemyList.indexOf(newEnemy);
@@ -80,32 +60,27 @@ package com.game
 			createEnemyPath(newEnemy);
 		}
 		//Function to transfer movement over to face the base
-		public function removeFromShorePath(follower:PathFollower, enemy:Enemy):void{
-			//If the tween is completed, remove from this path
-			if(follower.progress >= 1){
-				enemyPaths[enemy.targetPath].removeFollower(enemy.attachedFollower);
-			}
+		public function removeFromShorePath(enemy:Enemy):void{
+
 			//If the enemy is alive, send him toward the base
 			if(!enemy.isDead){
-				var basePath:LinePath2D = new LinePath2D([new Point(enemy.x, enemy.y),
-					new Point(levelBase.x, levelBase.y)]);
+				//Create a straight line between the shore and base
+				var basePath:Array = new Array({x:enemy.x, y:enemy.y},
+					{x:levelBase.x, y:levelBase.y});
 				
-				enemy.attachedFollower = basePath.addFollower(enemy, 0, true, 0);
-				TweenMax.to(enemy.attachedFollower, 8, {progress:1, ease:Linear.easeNone, onComplete:removeFromBasePath, onCompleteParams:[enemy.attachedFollower, enemy]});
+				//Tween along the bezier, orienting the angle along the way with a static speed
+				TweenMax.to(enemy, 0.5, {bezierThrough:basePath, orientToBezier:[["x", "y", "rotation", 0, 1]], ease:Linear.easeNone, onComplete:removeFromBasePath, onCompleteParams:[enemy]});
 			}
 			//Since the enemy is now on shore, he can't be hurt
 			enemy.canDamage = false;
 			
 		}
 		//Once the enemy hits the base, remove him from the base path
-		public function removeFromBasePath(follower:PathFollower, enemy:Enemy):void{
-			if(follower.progress >= 1){
-				enemyPaths[0].removeFollower(enemy.attachedFollower);
-			}
+		public function removeFromBasePath(enemy:Enemy):void{
 			
 			//Deal some damage to the base
 			if(!enemy.isDead){
-				levelBase.dealDamage(34);
+				levelBase.dealDamage(enemy.damage);
 			}
 			
 			//Remove all trace of the enemy
@@ -118,11 +93,11 @@ package com.game
 		//Calculates duration in seconds from a given speed
 		private function velocityToDuration(enemy:Enemy):Number{
 			var duration:Number;
-		//	var p1:Point = new Point(enemy.x, enemy.y);
-		//	var p2:Point = new Point(enemy.targetShore.x, enemy.targetShore.y);
+			var p1:Point = new Point(enemy.x, enemy.y);
+			var p2:Point = new Point(enemyPaths[enemy.targetPath][enemyPaths[enemy.targetPath].length - 1].x, 
+										enemyPaths[enemy.targetPath][enemyPaths[enemy.targetPath].length - 1].y);
 			
-		//	var distance:Number = Point.distance(p1, p2);
-			var distance:Number = enemyPaths[enemy.targetPath].totalLength;
+			var distance:Number = Point.distance(p1, p2);
 			
 			duration = Math.abs(distance/enemy.speed);
 			return duration;
