@@ -11,7 +11,7 @@ package com.game{
 		public var stageHeight:Number = 720;
 		
 		public function Game(){
-			level = new Level1(1280, 720);
+			level = new Level1(stageWidth, stageHeight);
 			addChild(level);
 		}
 	}

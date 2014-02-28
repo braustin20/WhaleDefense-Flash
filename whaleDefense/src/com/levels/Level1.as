@@ -9,7 +9,6 @@ package com.levels
 	import com.game.GenericProjectile;
 	import com.game.Ocean;
 	import com.game.Shore;
-	import com.greensock.motionPaths.LinePath2D;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
