@@ -2,15 +2,26 @@ package com.game
 {	
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Linear;
-	import com.greensock.motionPaths.PathFollower;
 	
 	import flash.geom.Point;
 	
+	import starling.display.MovieClip;
 	import starling.display.Sprite;
+	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
 
 	
 	public class EnemySpawner extends Sprite
 	{
+		//Load sprite sheet files
+		[Embed(source="../assets/basicWhale.xml",mimeType="application/octet-stream")]
+		private var EnemyAnimData:Class;
+		[Embed(source="../assets/basicWhale.png")]
+		private var EnemyAnimTexture:Class;
+		
+		//The texture atlases used
+		public var enemyTextureAtlas:TextureAtlas;
+		
 		private var enemyList:Array;
 		private var newEnemy:Enemy;
 		private var shores:Array;
@@ -19,6 +30,11 @@ package com.game
 		
 		//Contructor should take in two arrays, one for enemy spawn locations, one for shore locations
 		public function EnemySpawner(shoreList:Array, paths:Array, mBase:Base){
+			//The enemy texture atlas
+			var enemyTexture:Texture = Texture.fromBitmap(new EnemyAnimTexture());
+			var enemyXmlData:XML = XML(new EnemyAnimData());
+			enemyTextureAtlas = new TextureAtlas(enemyTexture, enemyXmlData);;
+			
 			//Create the list to store enemies
 			enemyList = new Array();
 			
@@ -45,10 +61,11 @@ package com.game
 			enemy.y = enemyPaths[rand][0].y;
 			
 			//Tween along the bezier, orienting the angle along the way with a static speed
-			TweenMax.to(enemy, velocityToDuration(enemy), {bezierThrough:enemyPaths[rand], orientToBezier:[["x", "y", "rotation", 0, 1]], ease:Linear.easeNone, onComplete:removeFromShorePath, onCompleteParams:[enemy]});
+			TweenMax.to(enemy, velocityToDuration(enemy), {bezierThrough:enemyPaths[rand], orientToBezier:[["x", "y", "rotation", 1.5, 1]], ease:Linear.easeNone, onComplete:removeFromShorePath, onCompleteParams:[enemy]});
 		}
-		public function createEnemy():void{			
-			newEnemy = new Enemy(0, 0);
+		public function createEnemy():void{		
+			var newSprite:MovieClip = new MovieClip(enemyTextureAtlas.getTextures("WhaleSprite"), 1);
+			newEnemy = new Enemy(0, 0, newSprite);
 			newEnemy.canDamage = true;
 			
 			addChild(newEnemy);
@@ -69,7 +86,7 @@ package com.game
 					{x:levelBase.x, y:levelBase.y});
 				
 				//Tween along the bezier, orienting the angle along the way with a static speed
-				TweenMax.to(enemy, 0.5, {bezierThrough:basePath, orientToBezier:[["x", "y", "rotation", 0, 1]], ease:Linear.easeNone, onComplete:removeFromBasePath, onCompleteParams:[enemy]});
+				TweenMax.to(enemy, 0.5, {bezierThrough:basePath, orientToBezier:[["x", "y", "rotation", 1.5, 1]], ease:Linear.easeNone, onComplete:removeFromBasePath, onCompleteParams:[enemy]});
 			}
 			//Since the enemy is now on shore, he can't be hurt
 			enemy.canDamage = false;

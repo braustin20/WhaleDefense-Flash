@@ -5,44 +5,55 @@ package com.game
 	
 	import flash.geom.Point;
 	
-	import starling.display.Quad;
 	import starling.display.Sprite;
-	import starling.utils.Color;
 	import com.greensock.plugins.TweenPlugin;
 	import com.greensock.plugins.BezierThroughPlugin; 
+	import starling.display.Image;
+	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
 	
 
 	public class Cannon extends Sprite
 	{
-		private var graphics:Quad;
+		private var graphics:Image;
 		private var newPlayerProjectile:PlayerProjectile;
 		private var arcArray:Array;
+		
+		private var textAtlas:TextureAtlas;
 		
 		public var arcHeight:Number;
 		public var velocity:Number;
 		
 		TweenPlugin.activate([BezierThroughPlugin]);
 		
-		public function Cannon(xPos:Number, yPos:Number)
+		public function Cannon(xPos:Number, yPos:Number, atlas:TextureAtlas)
 		{
 			this.x = xPos;
 			this.y = yPos;
 			
 			arcHeight = 200;
 			velocity = 1750;
+			textAtlas = atlas;
 			
-			//Placeholder sprite
-			graphics = new Quad(30, 40, Color.RED);
+			var cannonTexture:Texture = textAtlas.getTexture("shellapultSm");
+			var cannonImage:Image = new Image(cannonTexture);
+			
+			graphics = cannonImage;
+		
 			//Move the sprite so that it's centered
 			graphics.x -= graphics.width/2;
 			graphics.y -= graphics.height/2;
+			graphics.rotation = .3;
 			addChild(graphics);
 			
 		}
 		
 		public function shootBullet(touchLoc:Point):void{
+			var projTexture:Texture = textAtlas.getTexture("rockSm");
+			var projImage:Image = new Image(projTexture);
+			
 			//Add a newPlayerProjectile relative to this cannon
-			newPlayerProjectile = new PlayerProjectile(0, 0);
+			newPlayerProjectile = new PlayerProjectile(0, 0, projImage);
 			
 			addChild(newPlayerProjectile);
 			

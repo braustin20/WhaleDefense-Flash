@@ -14,13 +14,32 @@ package com.levels
 	import flash.geom.Point;
 	import flash.utils.Timer;
 	
+	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
 	import starling.utils.Color;
 	
 	public class Level1 extends Sprite
 	{
+		//Load sprite sheet files
+		[Embed(source="../assets/level1.xml",mimeType="application/octet-stream")]
+		private var LevelAnimData:Class;
+		[Embed(source="../assets/level1.png")]
+		private var LevelAnimTexture:Class;
+		
+		//Load sprite sheet files
+		[Embed(source="../assets/playerObjects_basic.xml",mimeType="application/octet-stream")]
+		private var ObjectsAnimData:Class;
+		[Embed(source="../assets/playerObjects_basic.png")]
+		private var ObjectsAnimTexture:Class;
+		
+		//The texture atlases used
+		public var levelTextureAtlas:TextureAtlas;
+		public var objectsTextureAtlas:TextureAtlas;
+		
 		public var levelBase:Base;
 		
 		private var newCannon:Cannon;
@@ -35,30 +54,45 @@ package com.levels
 		
 		public var enemySpawner:EnemySpawner;
 		
-		//Placeholder
-		private var background:Quad;
-		
 		private var ocean:Ocean;
 		
-		public function Level1(width:Number, height:Number)
-		{
-			//Flat color placeholder background
-			background = new Quad(width, height, Color.GRAY);
-			addChild(background);
+		public function Level1(sWidth:Number, sHeight:Number)
+		{	
+			//The texture atlas
+			var levelTexture:Texture = Texture.fromBitmap(new LevelAnimTexture());
+			var levelXmlData:XML = XML(new LevelAnimData());
+			levelTextureAtlas = new TextureAtlas(levelTexture, levelXmlData);;
 			
-			ocean = new Ocean();
+			var objectsTexture:Texture = Texture.fromBitmap(new ObjectsAnimTexture());
+			var objectsXmlData:XML = XML(new ObjectsAnimData());
+			objectsTextureAtlas = new TextureAtlas(objectsTexture, objectsXmlData);;
+			
+			var sandTexture:Texture = levelTextureAtlas.getTexture("Level1_sand");
+			var sandImage:Image = new Image(sandTexture);
+			sandImage.y = sHeight - sandImage.height;
+			addChild(sandImage);
+			
+			var waterTexture:Texture = levelTextureAtlas.getTexture("Level1_water");
+			var waterImage:Image = new Image(waterTexture);
+			ocean = new Ocean(waterImage);
 			addChild(ocean);
 			
+			var detailTexture:Texture = levelTextureAtlas.getTexture("Level1_detail");
+			var detailImage:Image = new Image(detailTexture);
+			detailImage.y = (sHeight - sandImage.height - 50);
+			addChild(detailImage);
 			
 			//Add the base that the player has to defend
-			levelBase = new Base(600, 50);
+			var baseTexture:Texture = objectsTextureAtlas.getTexture("castleSm");
+			var baseImage:Image = new Image(baseTexture);
+			levelBase = new Base(width/2, (height - 95), baseImage);
 			addChild(levelBase);
 			
 			
 			//Create a list of landing zones
 			shoreList = new Array();
 			//Spawn some shores
-			newShore = new Shore(600, 200);
+			newShore = new Shore(width/2, (height - 200));
 			addChild(newShore);
 			shoreList.push(newShore);
 			
@@ -73,7 +107,11 @@ package com.levels
 			addChild(enemySpawner);
 			
 			//Create a new cannon
-			newCannon = new Cannon(300, 50);
+			
+			
+			
+			
+			newCannon = new Cannon((width/2 - 250), (height - 260), objectsTextureAtlas);
 			addChild(newCannon);
 			
 			//Set the last created cannon as the current selected 
@@ -83,9 +121,12 @@ package com.levels
 		}
 		//Called each frame
 		public function onUpdate():void{
+			//Pick a random time between spawns
+			var randTime:Number = Math.floor(Math.random() * 2000) + 750;
+			
 			if(enemySpawner.enemiesList.length < 20 && !isSpawning){
 				isSpawning = true;
-				var spawnTimer:Timer = new Timer(750, 1);
+				var spawnTimer:Timer = new Timer(randTime, 1);
 				spawnTimer.addEventListener(TimerEvent.TIMER, timedSpawn);
 				spawnTimer.start();
 			}
@@ -100,13 +141,13 @@ package com.levels
 			pathArray = new Array();
 			
 			//Make your paths here, the more the better.
-			newPath = new Array({x:100, y:750},
-				{x:200, y:500},
+			newPath = new Array({x:100, y:-100},
+				{x:200, y:250},
 				{x:shores[0].x, y:shores[0].y});
 			pathArray.push(newPath);
 			
-			newPath = new Array({x:1100, y:750},
-				{x:1000, y:500},
+			newPath = new Array({x:1100, y:-100},
+				{x:1000, y:250},
 				{x:shores[0].x, y:shores[0].y});
 			pathArray.push(newPath);
 /*
@@ -185,7 +226,7 @@ package com.levels
 				//Search through the list of enemies to see if we just hit one
 				for each (var enemy:Enemy in enemySpawner.enemiesList){
 					//If the sprites intersect, destroy the ship
-					if(tempProjectile.getBounds(stage).intersects(enemy.getBounds(stage))){
+					if(tempProjectile.getBounds(stage).intersects(enemy.hitBox.getBounds(stage))){
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
 							

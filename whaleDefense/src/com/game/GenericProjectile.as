@@ -2,12 +2,12 @@ package com.game
 {
 	import com.events.ProjectileHit;
 	
-	import starling.display.Quad;
 	import starling.display.Sprite;
+	import starling.display.Image;
 	
 	public class GenericProjectile extends Sprite
 	{
-		public var graphics:Quad;
+		public var graphics:Image;
 		
 		public function GenericProjectile(xPos:Number=NaN, yPos:Number=NaN)
 		{

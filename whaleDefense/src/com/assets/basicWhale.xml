@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:35873c2a1f4eafb45a2c8767ede0d9bb:b6496f0c4129b1150792e4f52754f3d8:7df785be9653c1d9fece09490926aecd$ -->
+<TextureAtlas imagePath="basicWhale.png">
+    <SubTexture name="WhaleSprite" x="1" y="1" width="66" height="73" frameX="-20" frameY="0" frameWidth="100" frameHeight="75"/>
+</TextureAtlas>
