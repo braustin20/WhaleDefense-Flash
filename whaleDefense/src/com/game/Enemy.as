@@ -21,8 +21,8 @@ package com.game
 		public var targetPath:Number;
 		public var speed:Number;
 		
-		public var damage: Number;
-		
+		public var damage:Number;
+		public var value:Number = 100;
 		
 		public var canDamage:Boolean;
 		public var isDead:Boolean;

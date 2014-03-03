@@ -1,6 +1,8 @@
 package com.levels
 {
 	import com.allies.BuildZone;
+	import com.allies.Lobber;
+	import com.events.BuildStarted;
 	import com.events.ProjectileFired;
 	import com.events.ProjectileHit;
 	import com.game.Base;
@@ -18,9 +20,10 @@ package com.levels
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
-	import com.allies.Lobber;
+	import starling.utils.Color;
 	
 	public class Level1 extends Sprite
 	{
@@ -53,6 +56,9 @@ package com.levels
 		public var pathArray:Array;
 		
 		private var isSpawning:Boolean;
+		
+		private var textField:TextField;
+		public var currency:Number = 0;
 		
 		public var enemySpawner:EnemySpawner;
 		
@@ -99,6 +105,11 @@ package com.levels
 			buildZones.push(newBuildZone);
 			addChild(newBuildZone);
 			
+			var buildTexture2:Texture = objectsTextureAtlas.getTexture("buildArea");
+			var buildImage2:Image = new Image(buildTexture2);
+			newBuildZone = new BuildZone(150, (sHeight - 95), buildImage2);
+			buildZones.push(newBuildZone);
+			addChild(newBuildZone);
 			
 			
 			//Create a list of landing zones
@@ -108,6 +119,9 @@ package com.levels
 			addChild(newShore);
 			shoreList.push(newShore);
 			
+			textField = new TextField(120, 40, "0", "Arial", 24, Color.RED);
+			textField.border = true;
+			addChild(textField);
 			
 			
 			//Add listener which waits for stage creation
@@ -118,9 +132,6 @@ package com.levels
 			enemySpawner = new EnemySpawner(shoreList, generatePaths(), levelBase);
 			addChild(enemySpawner);
 			
-			//Create an allied lobber (for testing, will be placed by player in future)
-			var newLobber:Lobber = new Lobber(buildZones[0].x, buildZones[0].y, objectsTextureAtlas, enemySpawner);
-			addChild(newLobber);
 			
 			//Create a new cannon
 			newCannon = new Cannon((width/2 - 250), (height - 260), objectsTextureAtlas);
@@ -216,11 +227,33 @@ package com.levels
 			//Add player projectile fire listener
 			stage.addEventListener(ProjectileFired.FIRED, onProjectileFired);
 			
+			//Add player projectile fire listener
+			stage.addEventListener(BuildStarted.BUILD, onBuildStarted);
+			
 			//Used for game loop
 			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
 			
 			//Remove the uneeded stage creation listener
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+		}
+		//Called whenever a build zone is touched
+		private function onBuildStarted(event:BuildStarted):void{
+			//If the player has enough money, and there is not already a tower here, spawn one
+			if(currency >= 1000 && event.buildZone.occupied == false){
+				//Create an allied lobber (for testing, will be placed by player in future)
+				var newLobber:Lobber = new Lobber(event.buildZone.x, event.buildZone.y, objectsTextureAtlas, enemySpawner);
+				event.buildZone.occupied = true;
+				addChild(newLobber);
+				
+				//Subtract the price from currency
+				currency -= 1000;
+				textField.text = currency.toString();
+				
+				//Remove this build zone from the array and destroy it
+				var tempIndex:Number = buildZones.indexOf(event.buildZone);
+				buildZones.splice(tempIndex, 1);
+				event.buildZone.removeFromParent(true);
+			}
 		}
 		//Called when a shot has been fired into an object which accepts shots
 		private function onProjectileFired(event:ProjectileFired):void{
@@ -241,7 +274,9 @@ package com.levels
 					if(tempProjectile.getBounds(stage).intersects(enemy.hitBox.getBounds(stage))){
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
-							
+							currency += enemy.value;
+							textField.text = currency.toString();
+
 							//Set the enemy to dead, so that they don't make a path to the base
 							enemy.isDead = true;
 							
