@@ -107,10 +107,6 @@ package com.levels
 			addChild(enemySpawner);
 			
 			//Create a new cannon
-			
-			
-			
-			
 			newCannon = new Cannon((width/2 - 250), (height - 260), objectsTextureAtlas);
 			addChild(newCannon);
 			
