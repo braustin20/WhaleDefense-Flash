@@ -89,7 +89,7 @@ package com.game
 				//Find the midpoint between the current position and target
 				var midPoint:Object = findMid(new Point(newPlayerProjectile.x, newPlayerProjectile.y), touchLoc);
 				//Add a tween which scales up and moves to the mid point
-				timeline.to(newPlayerProjectile, velocityToDuration(new Point(midPoint.x, midPoint.y), newPlayerProjectile), {x:midPoint.x, y:midPoint.y, scaleX:1.75, scaleY:1.75, ease:Linear.easeNone});
+				timeline.to(newPlayerProjectile, velocityToDuration(new Point(midPoint.x, midPoint.y), newPlayerProjectile), {x:midPoint.x, y:midPoint.y, scaleX:2, scaleY:2, ease:Linear.easeNone});
 				//Add a tween directly afterwards which scales down and ends at the target
 				timeline.to(newPlayerProjectile, velocityToDuration(touchLoc, newPlayerProjectile), {x:touchLoc.x, y:touchLoc.y, scaleX:0.8, scaleY:0.8, ease:Linear.easeInOut, onComplete:newPlayerProjectile.destroy, onCompleteParams:[true]});
 					

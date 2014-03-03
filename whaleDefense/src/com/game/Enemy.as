@@ -39,7 +39,7 @@ package com.game
 			damage = 15;
 			
 			//Add a box which detects collisions
-			hitBox = new Quad(45, 90, Color.BLUE);
+			hitBox = new Quad(60, 110, Color.BLUE);
 			hitBox.alignPivot();
 			
 			//Toggle this to see debug hitbox underneath sprite
@@ -55,7 +55,7 @@ package com.game
 
 			//Additional positioning of hitbox in case of weird graphic
 			hitBox.x = graphics.x - 5;
-			hitBox.y = graphics.y + 10;
+			hitBox.y = graphics.y + 20;
 			
 			//Add listener which waits for stage creation
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
