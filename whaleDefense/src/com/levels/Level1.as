@@ -1,5 +1,6 @@
 package com.levels
 {
+	import com.allies.BuildZone;
 	import com.events.ProjectileFired;
 	import com.events.ProjectileHit;
 	import com.game.Base;
@@ -15,12 +16,11 @@ package com.levels
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
-	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
-	import starling.utils.Color;
+	import com.allies.Lobber;
 	
 	public class Level1 extends Sprite
 	{
@@ -44,6 +44,8 @@ package com.levels
 		
 		private var newCannon:Cannon;
 		public var selectedCannon:Cannon;
+		
+		public var buildZones:Array;
 		
 		private var shoreList:Array;
 		private var newShore:Shore;
@@ -85,8 +87,18 @@ package com.levels
 			//Add the base that the player has to defend
 			var baseTexture:Texture = objectsTextureAtlas.getTexture("castleSm");
 			var baseImage:Image = new Image(baseTexture);
-			levelBase = new Base(width/2, (height - 95), baseImage);
+			levelBase = new Base(sWidth/2, (sHeight - 95), baseImage);
 			addChild(levelBase);
+			
+			//Create the areas where the player is able to build defenses
+			buildZones = new Array();
+			
+			var buildTexture:Texture = objectsTextureAtlas.getTexture("buildArea");
+			var buildImage:Image = new Image(buildTexture);
+			var newBuildZone:BuildZone = new BuildZone(sWidth/2 + 150, (sHeight - 95), buildImage);
+			buildZones.push(newBuildZone);
+			addChild(newBuildZone);
+			
 			
 			
 			//Create a list of landing zones
@@ -105,6 +117,10 @@ package com.levels
 			//Create the enemy spawner
 			enemySpawner = new EnemySpawner(shoreList, generatePaths(), levelBase);
 			addChild(enemySpawner);
+			
+			//Create an allied lobber (for testing, will be placed by player in future)
+			var newLobber:Lobber = new Lobber(buildZones[0].x, buildZones[0].y, objectsTextureAtlas, enemySpawner);
+			addChild(newLobber);
 			
 			//Create a new cannon
 			newCannon = new Cannon((width/2 - 250), (height - 260), objectsTextureAtlas);

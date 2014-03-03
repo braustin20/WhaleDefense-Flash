@@ -20,7 +20,6 @@ package com.game
 			dispatchEvent(new ProjectileHit(ProjectileHit.HIT, isPlayer, this, true));
 			//Destruction
 			this.removeFromParent(true);
-			super.dispose();
 		}
 	}
 }
