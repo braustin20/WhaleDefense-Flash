@@ -1,11 +1,7 @@
 package com.game
 {
-	import com.events.ProjectileFired;
-	import com.events.ProjectileHit;
 	import com.greensock.TimelineMax;
 	import com.greensock.easing.Linear;
-	import com.greensock.plugins.BezierThroughPlugin;
-	import com.greensock.plugins.TweenPlugin;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;

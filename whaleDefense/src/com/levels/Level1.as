@@ -12,6 +12,7 @@ package com.levels
 	import com.game.GenericProjectile;
 	import com.game.Ocean;
 	import com.game.Shore;
+	import com.greensock.TweenMax;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -20,6 +21,7 @@ package com.levels
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.events.KeyboardEvent;
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
@@ -33,7 +35,6 @@ package com.levels
 		[Embed(source="../assets/level1.png")]
 		private var LevelAnimTexture:Class;
 		
-		//Load sprite sheet files
 		[Embed(source="../assets/playerObjects_basic.xml",mimeType="application/octet-stream")]
 		private var ObjectsAnimData:Class;
 		[Embed(source="../assets/playerObjects_basic.png")]
@@ -59,6 +60,8 @@ package com.levels
 		
 		private var textField:TextField;
 		public var currency:Number = 0;
+		
+		public var paused:Boolean;
 		
 		public var enemySpawner:EnemySpawner;
 		
@@ -144,10 +147,11 @@ package com.levels
 		}
 		//Called each frame
 		public function onUpdate():void{
-			//Pick a random time between spawns
-			var randTime:Number = Math.floor(Math.random() * 2000) + 750;
 			
-			if(enemySpawner.enemiesList.length < 20 && !isSpawning){
+			if(enemySpawner.enemiesList.length < 20 && !isSpawning && !paused){
+				//Pick a random time between spawns
+				var randTime:Number = Math.floor(Math.random() * 2000) + 750;
+				
 				isSpawning = true;
 				var spawnTimer:Timer = new Timer(randTime, 1);
 				spawnTimer.addEventListener(TimerEvent.TIMER, timedSpawn);
@@ -156,8 +160,13 @@ package com.levels
 		}
 		//Tell the enemy spawner to spawn a single enemy
 		public function timedSpawn(event:TimerEvent):void{
-			isSpawning = false;
-			enemySpawner.createEnemy();
+			if(!paused){
+				isSpawning = false;
+				enemySpawner.createEnemy();
+			}
+			else if(paused){
+				isSpawning = false;
+			}
 		}
 		//May want to condense
 		public function generatePaths():Array{
@@ -233,13 +242,29 @@ package com.levels
 			//Used for game loop
 			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
 			
+			//Used for game loop
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+			
 			//Remove the uneeded stage creation listener
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
+		protected function onKeyDown(event:KeyboardEvent):void{
+			if(event.keyCode == 27 && paused == false){
+				trace("Pressed escape");
+				TweenMax.pauseAll();
+				paused = true;
+			}
+			else if(event.keyCode == 27 && paused == true){
+				trace("Pressed escape");
+				TweenMax.resumeAll();
+				paused = false;
+			}
+		}
+		
 		//Called whenever a build zone is touched
 		private function onBuildStarted(event:BuildStarted):void{
 			//If the player has enough money, and there is not already a tower here, spawn one
-			if(currency >= 1000 && event.buildZone.occupied == false){
+			if(currency >= 1000 && event.buildZone.occupied == false && !paused){
 				//Create an allied lobber (for testing, will be placed by player in future)
 				var newLobber:Lobber = new Lobber(event.buildZone.x, event.buildZone.y, objectsTextureAtlas, enemySpawner);
 				event.buildZone.occupied = true;
@@ -258,8 +283,9 @@ package com.levels
 		//Called when a shot has been fired into an object which accepts shots
 		private function onProjectileFired(event:ProjectileFired):void{
 			var touchLoc:Point = event.touch.getLocation(selectedCannon);
-			
-			selectedCannon.shootBullet(touchLoc);
+			if(!paused){
+				selectedCannon.shootBullet(touchLoc);
+			}
 		}
 		//This is typically called when a player bullet finishes it's animation
 		public function onProjectileHit(event:ProjectileHit):void{

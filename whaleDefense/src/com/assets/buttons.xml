@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:afab5f319a74264e627ae6dcf08bc412:67a71a53574faff76fb634f1782f6fb2:ae6de5c3337c17880e1330b16dab8236$ -->
+<TextureAtlas imagePath="buttons.png">
+    <SubTexture name="Back" x="220" y="329" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="Exit" x="2" y="329" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="LevelButton1" x="2" y="111" width="161" height="140"/>
+    <SubTexture name="Options" x="165" y="220" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="Retry" x="165" y="111" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="levelSelect" x="220" y="2" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="newGame" x="2" y="2" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+</TextureAtlas>
