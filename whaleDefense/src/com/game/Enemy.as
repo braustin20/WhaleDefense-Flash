@@ -1,15 +1,17 @@
 package com.game
 {	
 	import com.events.ProjectileFired;
-
-	import starling.utils.Color;
+	
+	import flash.media.Sound;
+	
 	import starling.display.MovieClip;
+	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
-	import starling.display.Quad;
+	import starling.utils.Color;
 	
 	public class Enemy extends Sprite
 	{	

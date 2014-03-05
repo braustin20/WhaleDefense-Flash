@@ -16,12 +16,12 @@ package com.levels
 	import com.game.Ocean;
 	import com.game.Shore;
 	import com.greensock.TweenMax;
-	import com.ui.PauseMenu;
 	import com.ui.GameOverMenu;
+	import com.ui.PauseMenu;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
-
+	import flash.media.Sound;
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
@@ -60,6 +60,8 @@ package com.levels
 		
 		private var ocean:Ocean;
 		
+		private var explSound:Sound;
+		
 		private var mainGame:Game;
 		private var pauseMenu:PauseMenu;
 		
@@ -67,6 +69,7 @@ package com.levels
 		{	
 			mainGame = game;
 			
+			explSound = mainGame.assets.getSound("boom9");
 			
 			var sandTexture:Texture = game.assets.getTexture("Level1_sand");
 			var sandImage:Image = new Image(sandTexture);
@@ -306,12 +309,15 @@ package com.levels
 			
 			//If the object which triggered this was a player cannon, try to destroy an enemy
 			if(event.isPlayer){
+				//Test if the enemy was hit for audio/particle reasons
+				var enemyHit:Boolean = false;
 				//Search through the list of enemies to see if we just hit one
 				for each (var enemy:Enemy in enemySpawner.enemiesList){
 					//If the sprites intersect, destroy the ship
 					if(tempProjectile.getBounds(stage).intersects(enemy.hitBox.getBounds(stage))){
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
+							explSound.play(0, 0);
 							currency += enemy.value;
 							textField.text = ("Coins: " + currency.toString());
 

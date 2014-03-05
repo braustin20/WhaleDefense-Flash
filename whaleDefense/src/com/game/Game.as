@@ -49,7 +49,7 @@ package com.game{
 			var menu:MainMenu = new MainMenu(this);
 			
 			menuMusic = assets.getSound("frozenLoop");
-			soundTransform = new SoundTransform(1);
+			soundTransform = new SoundTransform(.5);
 			
 			channel = menuMusic.play(0, 9999, soundTransform);
 			

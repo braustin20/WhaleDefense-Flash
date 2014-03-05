@@ -42,6 +42,9 @@ package com.game
 		[Embed(source="../assets/audio/frozenLoop.mp3")]
 		public static const frozenLoop:Class;
 		
+		[Embed(source="../assets/audio/boom9.mp3")]
+		public static const boom9:Class;
+		
 		
 		public function EmbeddedAssets()
 		{
