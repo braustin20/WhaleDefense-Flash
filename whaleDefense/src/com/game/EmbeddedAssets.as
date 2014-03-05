@@ -45,6 +45,9 @@ package com.game
 		[Embed(source="../assets/audio/boom9.mp3")]
 		public static const boom9:Class;
 		
+		[Embed(source="../assets/audio/splash.mp3")]
+		public static const splash:Class;
+		
 		
 		public function EmbeddedAssets()
 		{

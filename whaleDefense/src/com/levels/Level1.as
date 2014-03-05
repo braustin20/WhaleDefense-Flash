@@ -61,6 +61,7 @@ package com.levels
 		private var ocean:Ocean;
 		
 		private var explSound:Sound;
+		private var splashSound:Sound;
 		
 		private var mainGame:Game;
 		private var pauseMenu:PauseMenu;
@@ -70,6 +71,7 @@ package com.levels
 			mainGame = game;
 			
 			explSound = mainGame.assets.getSound("boom9");
+			splashSound = mainGame.assets.getSound("splash");
 			
 			var sandTexture:Texture = game.assets.getTexture("Level1_sand");
 			var sandImage:Image = new Image(sandTexture);
@@ -330,8 +332,12 @@ package com.levels
 							
 							//Destroy the enemy
 							enemy.destroy();
+							enemyHit = true;
 						}
 					}
+				}
+				if(enemyHit == false){
+					splashSound.play();
 				}
 			}
 		}
