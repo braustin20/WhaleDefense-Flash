@@ -7,7 +7,6 @@ package com.game
 	
 	import starling.display.MovieClip;
 	import starling.display.Sprite;
-	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 
 	
@@ -93,6 +92,7 @@ package com.game
 			//Deal some damage to the base
 			if(!enemy.isDead){
 				levelBase.dealDamage(enemy.damage);
+				trace("dealing damage");
 			}
 			
 			//Remove all trace of the enemy

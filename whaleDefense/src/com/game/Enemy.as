@@ -36,7 +36,7 @@ package com.game
 		
 			//Set speed and damage hard coded for now
 			speed = 120;
-			damage = 15;
+			damage = 20;
 			
 			//Add a box which detects collisions
 			hitBox = new Quad(60, 110, Color.BLUE);

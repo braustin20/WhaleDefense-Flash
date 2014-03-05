@@ -17,11 +17,11 @@ package com.levels
 	import com.game.Shore;
 	import com.greensock.TweenMax;
 	import com.ui.PauseMenu;
+	import com.ui.GameOverMenu;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
-	import flash.media.Sound;
-	import flash.media.SoundChannel;
+
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
@@ -114,9 +114,7 @@ package com.levels
 			addChild(newShore);
 			shoreList.push(newShore);
 			
-			textField = new TextField(120, 40, "0", "Arial", 24, Color.RED);
-			textField.border = true;
-			addChild(textField);
+			
 			
 			
 			//Add listener which waits for stage creation
@@ -136,10 +134,23 @@ package com.levels
 			//replace this later with mouse selection
 			selectedCannon = newCannon;
 			
+			//The "score" keeper
+			textField = new TextField(220, 40, ("Coins: " + "0"), "Arial", 24, Color.RED);
+			textField.border = true;
+			addChild(textField);
+			
 		}
 		//Called each frame
 		public function onUpdate():void{
-			
+			if(this.levelBase.health <= 0 && !paused){
+				var gameOverMenu:GameOverMenu = new GameOverMenu(mainGame);
+				addChild(gameOverMenu);
+				paused = true;
+				for each(var ally:GenericAlly in allies){
+					ally.paused = true;
+				}
+				TweenMax.pauseAll();
+			}
 			if(enemySpawner.enemiesList.length < 20 && !isSpawning && !paused){
 				//Pick a random time between spawns
 				var randTime:Number = Math.floor(Math.random() * 2000) + 750;
@@ -273,7 +284,7 @@ package com.levels
 				
 				//Subtract the price from currency
 				currency -= 1000;
-				textField.text = currency.toString();
+				textField.text = ("Coins: " + currency.toString());
 				
 				//Remove this build zone from the array and destroy it
 				var tempIndex:Number = buildZones.indexOf(event.buildZone);
@@ -302,7 +313,7 @@ package com.levels
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
 							currency += enemy.value;
-							textField.text = currency.toString();
+							textField.text = ("Coins: " + currency.toString());
 
 							//Set the enemy to dead, so that they don't make a path to the base
 							enemy.isDead = true;
@@ -327,6 +338,9 @@ package com.levels
 						for each(var ally:GenericAlly in allies){
 							ally.paused = false;
 						}
+					break;
+				case "Retry":
+					mainGame.switchLevels("Level 1");
 					break;
 				case "Exit":
 					mainGame.switchLevels("Main Menu Exit");
