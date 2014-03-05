@@ -11,35 +11,32 @@ package com.game
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
+	import starling.utils.AssetManager;
 	
 
 	public class Cannon extends Sprite
 	{
 		private var graphics:Image;
-		private var newPlayerProjectile:PlayerProjectile;
-		private var arcArray:Array;
 		
+		private var newPlayerProjectile:PlayerProjectile;		
 		private var reloadTime:Number = 500;
 		private var isReloaded:Boolean = true;
 		private var timer:Timer;
 		
-		private var textAtlas:TextureAtlas;
+		private var assetManager:AssetManager;
 		
-		public var arcHeight:Number;
 		public var velocity:Number;
 				
-		public function Cannon(xPos:Number, yPos:Number, atlas:TextureAtlas)
+		public function Cannon(xPos:Number, yPos:Number, game:Game)
 		{
 			this.x = xPos;
 			this.y = yPos;
 			
-			arcHeight = 200;
 			velocity = 4000;
-			textAtlas = atlas;
+			assetManager = game.assets;
 			
 			//Load the catapault sprite
-			var cannonTexture:Texture = textAtlas.getTexture("shellapultSm");
+			var cannonTexture:Texture = assetManager.getTexture("shellapultSm");
 			var cannonImage:Image = new Image(cannonTexture);
 			
 			graphics = cannonImage;
@@ -72,7 +69,7 @@ package com.game
 		public function shootBullet(touchLoc:Point):void{
 			if(isReloaded){
 				//Load a new image for the projectile on each shot
-				var projTexture:Texture = textAtlas.getTexture("rockSm");
+				var projTexture:Texture = assetManager.getTexture("rockSm");
 				var projImage:Image = new Image(projTexture);
 				
 				//Add a newPlayerProjectile relative to this cannon

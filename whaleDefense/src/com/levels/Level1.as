@@ -1,21 +1,27 @@
 package com.levels
 {
 	import com.allies.BuildZone;
+	import com.allies.GenericAlly;
 	import com.allies.Lobber;
 	import com.events.BuildStarted;
+	import com.events.MenuButtonPressed;
 	import com.events.ProjectileFired;
 	import com.events.ProjectileHit;
 	import com.game.Base;
 	import com.game.Cannon;
 	import com.game.Enemy;
 	import com.game.EnemySpawner;
+	import com.game.Game;
 	import com.game.GenericProjectile;
 	import com.game.Ocean;
 	import com.game.Shore;
 	import com.greensock.TweenMax;
+	import com.ui.PauseMenu;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
+	import flash.media.Sound;
+	import flash.media.SoundChannel;
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
@@ -24,26 +30,10 @@ package com.levels
 	import starling.events.KeyboardEvent;
 	import starling.text.TextField;
 	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
 	import starling.utils.Color;
 	
 	public class Level1 extends Sprite
 	{
-		//Load sprite sheet files
-		[Embed(source="../assets/level1.xml",mimeType="application/octet-stream")]
-		private var LevelAnimData:Class;
-		[Embed(source="../assets/level1.png")]
-		private var LevelAnimTexture:Class;
-		
-		[Embed(source="../assets/playerObjects_basic.xml",mimeType="application/octet-stream")]
-		private var ObjectsAnimData:Class;
-		[Embed(source="../assets/playerObjects_basic.png")]
-		private var ObjectsAnimTexture:Class;
-		
-		//The texture atlases used
-		public var levelTextureAtlas:TextureAtlas;
-		public var objectsTextureAtlas:TextureAtlas;
-		
 		public var levelBase:Base;
 		
 		private var newCannon:Cannon;
@@ -63,56 +53,58 @@ package com.levels
 		
 		public var paused:Boolean;
 		
+		
+		private var allies:Array;
+		
 		public var enemySpawner:EnemySpawner;
 		
 		private var ocean:Ocean;
 		
-		public function Level1(sWidth:Number, sHeight:Number)
+		private var mainGame:Game;
+		private var pauseMenu:PauseMenu;
+		
+		public function Level1(game:Game)
 		{	
-			//The texture atlas
-			var levelTexture:Texture = Texture.fromBitmap(new LevelAnimTexture());
-			var levelXmlData:XML = XML(new LevelAnimData());
-			levelTextureAtlas = new TextureAtlas(levelTexture, levelXmlData);;
+			mainGame = game;
 			
-			var objectsTexture:Texture = Texture.fromBitmap(new ObjectsAnimTexture());
-			var objectsXmlData:XML = XML(new ObjectsAnimData());
-			objectsTextureAtlas = new TextureAtlas(objectsTexture, objectsXmlData);;
 			
-			var sandTexture:Texture = levelTextureAtlas.getTexture("Level1_sand");
+			var sandTexture:Texture = game.assets.getTexture("Level1_sand");
 			var sandImage:Image = new Image(sandTexture);
-			sandImage.y = sHeight - sandImage.height;
+			sandImage.y = mainGame.stageHeight - sandImage.height;
 			addChild(sandImage);
 			
-			var waterTexture:Texture = levelTextureAtlas.getTexture("Level1_water");
+			var waterTexture:Texture = game.assets.getTexture("Level1_water");
 			var waterImage:Image = new Image(waterTexture);
 			ocean = new Ocean(waterImage);
 			addChild(ocean);
 			
-			var detailTexture:Texture = levelTextureAtlas.getTexture("Level1_detail");
+			var detailTexture:Texture = game.assets.getTexture("Level1_detail");
 			var detailImage:Image = new Image(detailTexture);
-			detailImage.y = (sHeight - sandImage.height - 50);
+			detailImage.y = (mainGame.stageHeight - sandImage.height - 50);
 			addChild(detailImage);
 			
 			//Add the base that the player has to defend
-			var baseTexture:Texture = objectsTextureAtlas.getTexture("castleSm");
+			var baseTexture:Texture = game.assets.getTexture("castleSm");
 			var baseImage:Image = new Image(baseTexture);
-			levelBase = new Base(sWidth/2, (sHeight - 95), baseImage);
+			levelBase = new Base(mainGame.stageWidth/2, (mainGame.stageHeight - 95), baseImage);
 			addChild(levelBase);
 			
 			//Create the areas where the player is able to build defenses
 			buildZones = new Array();
 			
-			var buildTexture:Texture = objectsTextureAtlas.getTexture("buildArea");
+			var buildTexture:Texture = game.assets.getTexture("buildArea");
 			var buildImage:Image = new Image(buildTexture);
-			var newBuildZone:BuildZone = new BuildZone(sWidth/2 + 150, (sHeight - 95), buildImage);
+			var newBuildZone:BuildZone = new BuildZone(mainGame.stageWidth/2 + 150, (mainGame.stageHeight - 95), buildImage);
 			buildZones.push(newBuildZone);
 			addChild(newBuildZone);
 			
-			var buildTexture2:Texture = objectsTextureAtlas.getTexture("buildArea");
+			var buildTexture2:Texture = game.assets.getTexture("buildArea");
 			var buildImage2:Image = new Image(buildTexture2);
-			newBuildZone = new BuildZone(150, (sHeight - 95), buildImage2);
+			newBuildZone = new BuildZone(150, (mainGame.stageHeight - 95), buildImage2);
 			buildZones.push(newBuildZone);
 			addChild(newBuildZone);
+			
+			allies = new Array();
 			
 			
 			//Create a list of landing zones
@@ -132,12 +124,12 @@ package com.levels
 			
 			
 			//Create the enemy spawner
-			enemySpawner = new EnemySpawner(shoreList, generatePaths(), levelBase);
+			enemySpawner = new EnemySpawner(mainGame, shoreList, generatePaths(), levelBase);
 			addChild(enemySpawner);
 			
 			
 			//Create a new cannon
-			newCannon = new Cannon((width/2 - 250), (height - 260), objectsTextureAtlas);
+			newCannon = new Cannon((width/2 - 250), (height - 260), mainGame);
 			addChild(newCannon);
 			
 			//Set the last created cannon as the current selected 
@@ -245,20 +237,28 @@ package com.levels
 			//Used for game loop
 			stage.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
 			
+			
+			stage.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
+			
 			//Remove the uneeded stage creation listener
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		protected function onKeyDown(event:KeyboardEvent):void{
 			if(event.keyCode == 27 && paused == false){
-				trace("Pressed escape");
-				TweenMax.pauseAll();
+				pauseMenu = new PauseMenu(mainGame);
+				addChild(pauseMenu);
 				paused = true;
+				for each(var ally:GenericAlly in allies){
+					ally.paused = true;
+				}
+				TweenMax.pauseAll();
+				trace("Pressed escape");
 			}
-			else if(event.keyCode == 27 && paused == true){
+			/*else if(event.keyCode == 27 && paused == true){
 				trace("Pressed escape");
 				TweenMax.resumeAll();
 				paused = false;
-			}
+			}*/
 		}
 		
 		//Called whenever a build zone is touched
@@ -266,7 +266,8 @@ package com.levels
 			//If the player has enough money, and there is not already a tower here, spawn one
 			if(currency >= 1000 && event.buildZone.occupied == false && !paused){
 				//Create an allied lobber (for testing, will be placed by player in future)
-				var newLobber:Lobber = new Lobber(event.buildZone.x, event.buildZone.y, objectsTextureAtlas, enemySpawner);
+				var newLobber:Lobber = new Lobber(event.buildZone.x, event.buildZone.y, mainGame, enemySpawner);
+				allies.push(newLobber);
 				event.buildZone.occupied = true;
 				addChild(newLobber);
 				
@@ -310,14 +311,28 @@ package com.levels
 							var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
 							enemySpawner.enemiesList.splice(enemyIndex, 1);
 							
-							//Remove the tween this enemy is attached to
-						//	enemySpawner.enemyPaths[enemy.targetPath].removeFollower(enemy.attachedFollower);
-							
 							//Destroy the enemy
 							enemy.destroy();
 						}
 					}
 				}
+			}
+		}
+		protected function onButtonPressed(event:MenuButtonPressed):void{
+			switch(event.buttonName){
+				case "Resume" :
+						pauseMenu.removeFromParent(true);
+						paused = false;
+						TweenMax.resumeAll();
+						for each(var ally:GenericAlly in allies){
+							ally.paused = false;
+						}
+					break;
+				case "Exit":
+					mainGame.switchLevels("Main Menu Exit");
+					break;
+				default:
+					trace("Button has no listener");
 			}
 		}
 		public function get shores():Array{

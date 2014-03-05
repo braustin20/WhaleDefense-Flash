@@ -13,11 +13,7 @@ package com.game
 	
 	public class EnemySpawner extends Sprite
 	{
-		//Load sprite sheet files
-		[Embed(source="../assets/basicWhale.xml",mimeType="application/octet-stream")]
-		private var EnemyAnimData:Class;
-		[Embed(source="../assets/basicWhale.png")]
-		private var EnemyAnimTexture:Class;
+		
 		
 		//The texture atlases used
 		public var enemyTextureAtlas:TextureAtlas;
@@ -27,13 +23,12 @@ package com.game
 		private var shores:Array;
 		public var enemyPaths:Array;
 		private var levelBase:Base;
+		private var mainGame:Game;
 		
 		//Contructor should take in two arrays, one for enemy spawn locations, one for shore locations
-		public function EnemySpawner(shoreList:Array, paths:Array, mBase:Base){
-			//The enemy texture atlas
-			var enemyTexture:Texture = Texture.fromBitmap(new EnemyAnimTexture());
-			var enemyXmlData:XML = XML(new EnemyAnimData());
-			enemyTextureAtlas = new TextureAtlas(enemyTexture, enemyXmlData);;
+		public function EnemySpawner(game:Game, shoreList:Array, paths:Array, mBase:Base){
+			mainGame = game;
+
 			
 			//Create the list to store enemies
 			enemyList = new Array();
@@ -64,7 +59,7 @@ package com.game
 			TweenMax.to(enemy, velocityToDuration(enemy), {bezierThrough:enemyPaths[rand], orientToBezier:[["x", "y", "rotation", 1.5, 1]], ease:Linear.easeNone, onComplete:removeFromShorePath, onCompleteParams:[enemy]});
 		}
 		public function createEnemy():void{		
-			var newSprite:MovieClip = new MovieClip(enemyTextureAtlas.getTextures("WhaleSprite"), 1);
+			var newSprite:MovieClip = new MovieClip(mainGame.assets.getTextures("WhaleSprite"), 1);
 			newEnemy = new Enemy(0, 0, newSprite);
 			newEnemy.canDamage = true;
 			

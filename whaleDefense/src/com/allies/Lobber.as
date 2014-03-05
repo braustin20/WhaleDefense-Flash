@@ -13,12 +13,12 @@ package com.allies
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
-	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
+	import com.game.Game;
+	import starling.utils.AssetManager;
 	
-	public class Lobber extends Sprite
+	public class Lobber extends GenericAlly
 	{
 		private var graphics:Image;
 		private var newPlayerProjectile:PlayerProjectile;
@@ -29,7 +29,7 @@ package com.allies
 		private var timer:Timer;
 		
 		//The sprites used for this object
-		private var textAtlas:TextureAtlas;
+		private var assets:AssetManager;
 		
 		//Speed of the bullet
 		public var velocity:Number = 4000;
@@ -39,17 +39,17 @@ package com.allies
 		
 		TweenPlugin.activate([BezierThroughPlugin]);
 		
-		public function Lobber(xPos:Number, yPos:Number, atlas:TextureAtlas, spawner:EnemySpawner)
+		public function Lobber(xPos:Number, yPos:Number, game:Game, spawner:EnemySpawner)
 		{
 			this.x = xPos;
 			this.y = yPos;
 			
-			textAtlas = atlas;
+			assets = game.assets;
 
 			enemySpawner = spawner;
 			
 			//Load the catapault sprite
-			var cannonTexture:Texture = textAtlas.getTexture("shellapultSm");
+			var cannonTexture:Texture = assets.getTexture("shellapultSm");
 			var cannonImage:Image = new Image(cannonTexture);
 			
 			graphics = cannonImage;
@@ -78,7 +78,7 @@ package com.allies
 		}
 		private function onReloadComplete(event:TimerEvent):void{
 			//If there are enemies present, search through them
-			if(enemySpawner.enemiesList.length >= 1){
+			if(enemySpawner.enemiesList.length >= 1 && !paused){
 				//Store currently targeted enemy
 				var targEnemy:Enemy;
 				//The distance to the closest enemy
@@ -109,7 +109,7 @@ package com.allies
 			targLoc = globalToLocal(targLoc);
 
 			//Load a new image for the projectile on each shot
-			var projTexture:Texture = textAtlas.getTexture("rockSm");
+			var projTexture:Texture = assets.getTexture("rockSm");
 			var projImage:Image = new Image(projTexture);
 			
 			//Add a newPlayerProjectile relative to this cannon

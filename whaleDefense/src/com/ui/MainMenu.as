@@ -3,46 +3,30 @@ package com.ui
 	import com.events.MenuButtonPressed;
 	import com.game.Game;
 	
+	
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
 	
 	public class MainMenu extends Sprite
-	{
-		[Embed(source="../assets/buttons.xml",mimeType="application/octet-stream")]
-		private var ButtonAtlasData:Class;
-		[Embed(source="../assets/buttons.png")]
-		private var ButtonAtlasImage:Class;
-		
-		[Embed(source="../assets/mainMenuBackground.png")]
-		public static const Background:Class;
-		
+	{	
 		private var backImage:Image;
-		
-		//The texture atlases used
-		public var buttonTextureAtlas:TextureAtlas;
-		
 		private var mainGame:Game;
 		
 		public function MainMenu(game:Game)
 		{
 			super();
-			
+
 			mainGame = game;
 			
-			backImage = Image.fromBitmap(new Background());
+			backImage = new Image(game.assets.getTexture("mainMenuBackground"));
 			backImage.scaleX = 0.67;
 			backImage.scaleY = 0.67;
 			addChild(backImage);
 			
-			//The texture atlas
-			var buttonsTexture:Texture = Texture.fromBitmap(new ButtonAtlasImage());
-			var buttonsXmlData:XML = XML(new ButtonAtlasData());
-			buttonTextureAtlas = new TextureAtlas(buttonsTexture, buttonsXmlData);;
-			
-			var newGameTexture:Texture = buttonTextureAtlas.getTexture("newGame");
+			var newGameTexture:Texture = game.assets.getTexture("newGame");
 			var newGameImage:Image = new Image(newGameTexture);
 			
 			var newGameButton:MenuButton = new MenuButton(100, 200, "New Game", newGameImage);
@@ -50,7 +34,7 @@ package com.ui
 			newGameButton.scaleY = .8;
 			addChild(newGameButton);
 			
-			var levelSelectTexture:Texture = buttonTextureAtlas.getTexture("levelSelect");
+			var levelSelectTexture:Texture = game.assets.getTexture("levelSelect");
 			var levelSelectImage:Image = new Image(levelSelectTexture);
 			
 			var levelSelectButton:MenuButton = new MenuButton(100, 300, "Level Select", levelSelectImage);
@@ -58,7 +42,7 @@ package com.ui
 			levelSelectButton.scaleY = .8;
 			addChild(levelSelectButton);
 			
-			var optionsTexture:Texture = buttonTextureAtlas.getTexture("Options");
+			var optionsTexture:Texture = game.assets.getTexture("Options");
 			var optionsImage:Image = new Image(optionsTexture);
 			
 			var optionsButton:MenuButton = new MenuButton(100, 400, "Options", optionsImage);
@@ -67,15 +51,15 @@ package com.ui
 			addChild(optionsButton);
 			
 			//Exit button only used on desktop app and mobile
-			/*
-			var exitTexture:Texture = buttonTextureAtlas.getTexture("Exit");
+			
+			var exitTexture:Texture = game.assets.getTexture("Exit");
 			var exitImage:Image = new Image(exitTexture);
 			
 			var exitButton:MenuButton = new MenuButton(100, 500, "Exit", exitImage);
 			exitButton.scaleX = .8;
 			exitButton.scaleY = .8;
 			addChild(exitButton);
-			*/
+			
 			
 			//Add listener which waits for stage creation
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
@@ -85,7 +69,7 @@ package com.ui
 			//Used for game loop
 			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
 			
-			//Add player projectile fire listener
+			//Called if a button is pressed
 			stage.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
 			
 			//Remove the uneeded stage creation listener

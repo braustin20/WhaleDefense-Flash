@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:c61fc306b56abd0293cb5f8b2dcf9167:d22155420c93329b6b8ebcbd655ea121:0e738e3d94abdf74d3a21f81b162a92f$ -->
+<!-- $TexturePacker:SmartUpdate:dfb57f40d58e62961d1a1b1af44617e7:618a2750cb3c4729ba83f64b2302d2e5:0e738e3d94abdf74d3a21f81b162a92f$ -->
 <TextureAtlas imagePath="playerObjects_basic.png">
     <SubTexture name="buildArea" x="153" y="2" width="100" height="94"/>
     <SubTexture name="castleSm" x="2" y="2" width="149" height="140" frameX="-7" frameY="0" frameWidth="159" frameHeight="140"/>

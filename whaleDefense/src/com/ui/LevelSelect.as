@@ -7,23 +7,13 @@ package com.ui
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
-	
+
 	public class LevelSelect extends Sprite
-	{
-		[Embed(source="../assets/buttons.xml",mimeType="application/octet-stream")]
-		private var ButtonAtlasData:Class;
-		[Embed(source="../assets/buttons.png")]
-		private var ButtonAtlasImage:Class;
-		
-		[Embed(source="../assets/wavesBackground.png")]
-		public static const Background:Class;
-		
+	{	
+		//The background image
 		private var backImage:Image;
-		
-		//The texture atlases used
-		public var buttonTextureAtlas:TextureAtlas;
-		
+
+		//Reference to the main game for asset management
 		private var mainGame:Game;
 		
 		public function LevelSelect(game:Game)
@@ -32,17 +22,14 @@ package com.ui
 			
 			mainGame = game;
 			
-			backImage = Image.fromBitmap(new Background());
+			//Load the background image
+			backImage = new Image(game.assets.getTexture("wavesBackground"));
 			backImage.scaleX = 0.67;
 			backImage.scaleY = 0.67;
 			addChild(backImage);
 			
-			//The texture atlas
-			var buttonsTexture:Texture = Texture.fromBitmap(new ButtonAtlasImage());
-			var buttonsXmlData:XML = XML(new ButtonAtlasData());
-			buttonTextureAtlas = new TextureAtlas(buttonsTexture, buttonsXmlData);;
-			
-			var Level1Texture:Texture = buttonTextureAtlas.getTexture("LevelButton1");
+			//----Place level buttons----
+			var Level1Texture:Texture = game.assets.getTexture("LevelButton1");
 			var Level1Image:Image = new Image(Level1Texture);
 			
 			var Level1Button:MenuButton = new MenuButton(200, 200, "Level 1", Level1Image);
@@ -51,7 +38,9 @@ package com.ui
 			addChild(Level1Button);
 			
 			
-			var backTexture:Texture = buttonTextureAtlas.getTexture("Back");
+			
+			//Place back button
+			var backTexture:Texture = game.assets.getTexture("Back");
 			var backImage:Image = new Image(backTexture);
 			
 			var backButton:MenuButton = new MenuButton(mainGame.stageWidth/2, 600, "Back", backImage);
@@ -67,7 +56,7 @@ package com.ui
 			//Used for game loop
 			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
 			
-			//Add player projectile fire listener
+			//Called if a button is pressed
 			stage.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
 			
 			//Remove the uneeded stage creation listener
