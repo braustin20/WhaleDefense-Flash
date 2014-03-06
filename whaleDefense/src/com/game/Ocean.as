@@ -30,7 +30,7 @@ package com.game
 		private function onAddedToStage():void{
 			//Input listeners
 			//Add listener for any touch/mouse event
-			stage.addEventListener(TouchEvent.TOUCH, onTouch);
+			this.addEventListener(TouchEvent.TOUCH, onTouch);
 		}
 		public function onTouch(event:TouchEvent):void{
 			//Touch data when clicked or tapped down

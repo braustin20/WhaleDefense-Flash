@@ -67,10 +67,10 @@ package com.ui
 		//Once the stage is created, add the remaining listeners
 		public function onAddedToStage(event:Event):void{		
 			//Used for game loop
-			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
+			this.addEventListener(Event.ENTER_FRAME, this.onUpdate);
 			
 			//Called if a button is pressed
-			stage.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
+			this.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
 			
 			//Remove the uneeded stage creation listener
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);

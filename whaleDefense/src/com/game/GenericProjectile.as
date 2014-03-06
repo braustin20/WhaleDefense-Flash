@@ -9,10 +9,11 @@ package com.game
 	{
 		public var graphics:Image;
 		
-		public function GenericProjectile(xPos:Number=NaN, yPos:Number=NaN)
+		public function GenericProjectile(xPos:Number=0, yPos:Number=0)
 		{
 			this.x = xPos;
 			this.y = yPos;
+			this.alignPivot();
 		}
 		//Destroys this projectile and call the hit event
 		public function destroy(isPlayer:Boolean=false):void{

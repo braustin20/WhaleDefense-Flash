@@ -2,6 +2,7 @@ package com.allies
 {
 	import com.game.Enemy;
 	import com.game.EnemySpawner;
+	import com.game.Game;
 	import com.game.PlayerProjectile;
 	import com.greensock.TimelineMax;
 	import com.greensock.easing.Linear;
@@ -10,12 +11,12 @@ package com.allies
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
+	import flash.media.Sound;
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
 	import starling.events.Event;
 	import starling.textures.Texture;
-	import com.game.Game;
 	import starling.utils.AssetManager;
 	
 	public class Lobber extends GenericAlly
@@ -37,16 +38,21 @@ package com.allies
 		//We need a reference to the spawner to search for targets
 		private var enemySpawner:EnemySpawner;
 		
-		TweenPlugin.activate([BezierThroughPlugin]);
+		private var launchSound:Sound;
 		
+		private var mainGame:Game;
+				
 		public function Lobber(xPos:Number, yPos:Number, game:Game, spawner:EnemySpawner)
 		{
 			this.x = xPos;
 			this.y = yPos;
 			
 			assets = game.assets;
+			mainGame = game;
 
 			enemySpawner = spawner;
+			
+			launchSound = assets.getSound("woosh");
 			
 			//Load the catapault sprite
 			var cannonTexture:Texture = assets.getTexture("shellapultSm");
@@ -79,6 +85,7 @@ package com.allies
 		private function onReloadComplete(event:TimerEvent):void{
 			//If there are enemies present, search through them
 			if(enemySpawner.enemiesList.length >= 1 && !paused){
+				launchSound.play(0, 1);
 				//Store currently targeted enemy
 				var targEnemy:Enemy;
 				//The distance to the closest enemy

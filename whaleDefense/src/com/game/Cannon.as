@@ -20,7 +20,7 @@ package com.game
 		
 		private var newPlayerProjectile:PlayerProjectile;		
 		private var reloadTime:Number = 500;
-		private var isReloaded:Boolean = true;
+		public var isReloaded:Boolean = true;
 		private var timer:Timer;
 		
 		private var assetManager:AssetManager;

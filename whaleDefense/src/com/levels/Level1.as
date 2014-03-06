@@ -11,10 +11,12 @@ package com.levels
 	import com.game.Cannon;
 	import com.game.Enemy;
 	import com.game.EnemySpawner;
+	import com.game.FireExplosion;
 	import com.game.Game;
 	import com.game.GenericProjectile;
 	import com.game.Ocean;
 	import com.game.Shore;
+	import com.game.SplashExplosion;
 	import com.greensock.TweenMax;
 	import com.ui.GameOverMenu;
 	import com.ui.PauseMenu;
@@ -62,6 +64,7 @@ package com.levels
 		
 		private var explSound:Sound;
 		private var splashSound:Sound;
+		private var launchSound:Sound;
 		
 		private var mainGame:Game;
 		private var pauseMenu:PauseMenu;
@@ -69,27 +72,30 @@ package com.levels
 		public function Level1(game:Game)
 		{	
 			mainGame = game;
-			
+			init();
+		}
+		protected function init():void{
 			explSound = mainGame.assets.getSound("boom9");
 			splashSound = mainGame.assets.getSound("splash");
+			launchSound = mainGame.assets.getSound("woosh");
 			
-			var sandTexture:Texture = game.assets.getTexture("Level1_sand");
+			var sandTexture:Texture = mainGame.assets.getTexture("Level1_sand");
 			var sandImage:Image = new Image(sandTexture);
 			sandImage.y = mainGame.stageHeight - sandImage.height;
 			addChild(sandImage);
 			
-			var waterTexture:Texture = game.assets.getTexture("Level1_water");
+			var waterTexture:Texture = mainGame.assets.getTexture("Level1_water");
 			var waterImage:Image = new Image(waterTexture);
 			ocean = new Ocean(waterImage);
 			addChild(ocean);
 			
-			var detailTexture:Texture = game.assets.getTexture("Level1_detail");
+			var detailTexture:Texture = mainGame.assets.getTexture("Level1_detail");
 			var detailImage:Image = new Image(detailTexture);
 			detailImage.y = (mainGame.stageHeight - sandImage.height - 50);
 			addChild(detailImage);
 			
 			//Add the base that the player has to defend
-			var baseTexture:Texture = game.assets.getTexture("castleSm");
+			var baseTexture:Texture = mainGame.assets.getTexture("castleSm");
 			var baseImage:Image = new Image(baseTexture);
 			levelBase = new Base(mainGame.stageWidth/2, (mainGame.stageHeight - 95), baseImage);
 			addChild(levelBase);
@@ -97,20 +103,19 @@ package com.levels
 			//Create the areas where the player is able to build defenses
 			buildZones = new Array();
 			
-			var buildTexture:Texture = game.assets.getTexture("buildArea");
+			var buildTexture:Texture = mainGame.assets.getTexture("buildArea");
 			var buildImage:Image = new Image(buildTexture);
 			var newBuildZone:BuildZone = new BuildZone(mainGame.stageWidth/2 + 150, (mainGame.stageHeight - 95), buildImage);
 			buildZones.push(newBuildZone);
 			addChild(newBuildZone);
 			
-			var buildTexture2:Texture = game.assets.getTexture("buildArea");
+			var buildTexture2:Texture = mainGame.assets.getTexture("buildArea");
 			var buildImage2:Image = new Image(buildTexture2);
 			newBuildZone = new BuildZone(150, (mainGame.stageHeight - 95), buildImage2);
 			buildZones.push(newBuildZone);
 			addChild(newBuildZone);
 			
 			allies = new Array();
-			
 			
 			//Create a list of landing zones
 			shoreList = new Array();
@@ -119,12 +124,8 @@ package com.levels
 			addChild(newShore);
 			shoreList.push(newShore);
 			
-			
-			
-			
 			//Add listener which waits for stage creation
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
-			
+			this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);	
 			
 			//Create the enemy spawner
 			enemySpawner = new EnemySpawner(mainGame, shoreList, generatePaths(), levelBase);
@@ -143,7 +144,6 @@ package com.levels
 			textField = new TextField(220, 40, ("Coins: " + "0"), "Arial", 24, Color.RED);
 			textField.border = true;
 			addChild(textField);
-			
 		}
 		//Called each frame
 		public function onUpdate():void{
@@ -239,22 +239,22 @@ package com.levels
 		//Once the stage is created, add the remaining listeners
 		public function onAddedToStage(event:Event):void{		
 			//Add player projectile hit listener
-			stage.addEventListener(ProjectileHit.HIT, onProjectileHit);
+			this.addEventListener(ProjectileHit.HIT, onProjectileHit);
 			
 			//Add player projectile fire listener
-			stage.addEventListener(ProjectileFired.FIRED, onProjectileFired);
+			this.addEventListener(ProjectileFired.FIRED, onProjectileFired);
 			
 			//Add player projectile fire listener
-			stage.addEventListener(BuildStarted.BUILD, onBuildStarted);
+			this.addEventListener(BuildStarted.BUILD, onBuildStarted);
 			
 			//Used for game loop
-			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
+			this.addEventListener(Event.ENTER_FRAME, this.onUpdate);
 			
 			//Used for game loop
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
+			this.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
 			
 			
-			stage.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
+			this.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
 			
 			//Remove the uneeded stage creation listener
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
@@ -300,7 +300,8 @@ package com.levels
 		//Called when a shot has been fired into an object which accepts shots
 		private function onProjectileFired(event:ProjectileFired):void{
 			var touchLoc:Point = event.touch.getLocation(selectedCannon);
-			if(!paused){
+			if(!paused && selectedCannon.isReloaded){
+				launchSound.play();
 				selectedCannon.shootBullet(touchLoc);
 			}
 		}
@@ -308,6 +309,8 @@ package com.levels
 		public function onProjectileHit(event:ProjectileHit):void{
 			//Store the projectile passed through from the event
 			var tempProjectile:GenericProjectile = event.projectile;
+		//	var hitPoint:Point = globalToLocal(tempProjectile.localToGlobal(new Point(tempProjectile.x , tempProjectile.y)));
+			var hitPoint:Point = new Point(tempProjectile.graphics.getBounds(stage).x + (tempProjectile.graphics.width/2), tempProjectile.getBounds(stage).y + (tempProjectile.graphics.height/2));
 			
 			//If the object which triggered this was a player cannon, try to destroy an enemy
 			if(event.isPlayer){
@@ -316,9 +319,12 @@ package com.levels
 				//Search through the list of enemies to see if we just hit one
 				for each (var enemy:Enemy in enemySpawner.enemiesList){
 					//If the sprites intersect, destroy the ship
-					if(tempProjectile.getBounds(stage).intersects(enemy.hitBox.getBounds(stage))){
+					if(tempProjectile.graphics.getBounds(stage).intersects(enemy.hitBox.getBounds(stage))){
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
+							var explosion:FireExplosion = new FireExplosion(enemy.x, enemy.y, mainGame);
+							addChild(explosion);
+							
 							explSound.play(0, 0);
 							currency += enemy.value;
 							textField.text = ("Coins: " + currency.toString());
@@ -332,11 +338,15 @@ package com.levels
 							
 							//Destroy the enemy
 							enemy.destroy();
-							enemyHit = true;
+							
 						}
+						enemyHit = true;
 					}
 				}
 				if(enemyHit == false){
+					var splash:SplashExplosion = new SplashExplosion(hitPoint.x, hitPoint.y, mainGame);
+					addChild(splash);
+					
 					splashSound.play();
 				}
 			}

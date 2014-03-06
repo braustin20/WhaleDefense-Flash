@@ -8,13 +8,17 @@ package com.game
 		{
 			this.x = xPos;
 			this.y = yPos;
+			this.alignPivot();
 			
 			
 			//Placeholder sprite
 			graphics = sprite;
 			//Move the sprite so that it's centered
 			graphics.alignPivot();
-			this.x -= graphics.width/2;
+			graphics.x = this.x;
+			graphics.y = this.y;
+		//	this.x -= graphics.width/2;
+		//	this.y -= graphics.height/2;
 			addChild(graphics);
 			
 		}

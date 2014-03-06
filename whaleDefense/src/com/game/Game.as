@@ -1,18 +1,28 @@
 package com.game{
+	import com.assets.EmbeddedAssets;
 	import com.levels.Level1;
 	import com.ui.LevelSelect;
 	import com.ui.MainMenu;
 	
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
 	
 	import starling.display.DisplayObject;
+	import starling.display.Image;
+	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.utils.AssetManager;
-	import flash.media.SoundTransform;
+	import starling.utils.Color;
 	
 	public class Game extends Sprite{	
 		private var currentLevel:DisplayObject;
+		
+		[Embed(source="../assets/textures/loadingBackground.png")]
+		private var loadingBackground:Class;
+		private var loadingBarBack:Quad;
+		private var loadingBar:Quad;
+		private var loadingBarMaxSize:Number = 900;
 		
 		//Store stage size
 		public var stageWidth:Number = 1280;
@@ -26,6 +36,24 @@ package com.game{
 		public var assets:AssetManager;
 		
 		public function Game(){
+			var loadingScreen:Image = Image.fromBitmap(new loadingBackground());
+			loadingScreen.scaleX = .67;
+			loadingScreen.scaleY = .67;
+			addChild(loadingScreen);
+			
+			//The background to the loading bar
+			loadingBarBack = new Quad(900, 20, Color.GRAY);
+			loadingBarBack.y = stageHeight - 100;
+			loadingBarBack.x = 190;
+			addChild(loadingBarBack);
+			
+			//The green foreground
+			loadingBar = new Quad(10, 20, Color.GREEN);
+			loadingBarMaxSize = loadingBarBack.width;
+			loadingBar.y = stageHeight - 100;
+			loadingBar.x = 190;
+			addChild(loadingBar);
+			
 			//Initialize an asset manager
 			assets = new AssetManager();
 			//Ensure console logs are all printed
@@ -40,6 +68,9 @@ package com.game{
 			assets.loadQueue(function(ratio:Number):void{
 				trace("Loading assets, progress:", ratio);
 				
+				//Change the loading bar based on % of assets loaded
+				loadingBar.width = (900 * ratio);
+				
 				if (ratio == 1.0){
 					startGame();
 				}
@@ -49,7 +80,7 @@ package com.game{
 			var menu:MainMenu = new MainMenu(this);
 			
 			menuMusic = assets.getSound("frozenLoop");
-			soundTransform = new SoundTransform(.5);
+			soundTransform = new SoundTransform(.3);
 			
 			channel = menuMusic.play(0, 9999, soundTransform);
 			
@@ -58,28 +89,32 @@ package com.game{
 			
 			currentLevel = menu;
 			addChild(menu);
+			trace("Current Number of Children: " + this.numChildren);
 		}
 		public function switchLevels(levelName:String):void{
 			switch(levelName){
 				case "Level 1" :
 					var level:Level1 = new Level1(this);
+					addChild(level);	
 					removeChild(currentLevel, true);
-					addChild(level);					
 					currentLevel = level;
 					channel.stop();
 					channel = level1Music.play(0, 9999, soundTransform);
+					trace("Current Number of Children: " + this.numChildren);
 					break;
 				case "Level Select" :
 					var levelMenu:LevelSelect = new LevelSelect(this);
 					removeChild(currentLevel, true);
 					addChild(levelMenu);
 					currentLevel = levelMenu;
+					trace("Current Number of Children: " + this.numChildren);
 					break;
 				case "Main Menu" :
 					var mainMenu:MainMenu = new MainMenu(this);
 					removeChild(currentLevel, true);
 					addChild(mainMenu);
 					currentLevel = mainMenu;
+					trace("Current Number of Children: " + this.numChildren);
 					break;
 				case "Main Menu Exit" :
 					mainMenu = new MainMenu(this);
@@ -88,6 +123,7 @@ package com.game{
 					currentLevel = mainMenu;
 					channel.stop();
 					channel = menuMusic.play(0, 9999, soundTransform);
+					trace("Current Number of Children: " + this.numChildren);
 					break;
 			}
 		}
