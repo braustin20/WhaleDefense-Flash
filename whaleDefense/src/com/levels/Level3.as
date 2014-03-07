@@ -20,6 +20,7 @@ package com.levels
 	import com.game.SplashExplosion;
 	import com.greensock.TweenMax;
 	import com.ui.GameOverMenu;
+	import com.ui.GameWonMenu;
 	import com.ui.PauseMenu;
 	
 	import flash.events.TimerEvent;
@@ -63,6 +64,8 @@ package com.levels
 		private var allies:Array;
 		
 		public var enemySpawner:EnemySpawner;
+		private var enemiesDestroyed:Number;
+		private var killsToWin:Number;
 		
 		private var bottomLayer:LevelBottomLayer;
 		private var topLayer:LevelTopLayer;
@@ -80,7 +83,10 @@ package com.levels
 			init();
 		}
 		protected function init():void{
-			explSound = mainGame.assets.getSound("boom9");
+			enemiesDestroyed = 0;
+			killsToWin = 45;
+			
+			explSound = mainGame.assets.getSound("explosion");
 			splashSound = mainGame.assets.getSound("splash");
 			launchSound = mainGame.assets.getSound("woosh");
 			
@@ -180,6 +186,7 @@ package com.levels
 				var spawnTimer:Timer = new Timer(randTime, 1);
 				spawnTimer.addEventListener(TimerEvent.TIMER, timedSpawn);
 				spawnTimer.start();
+				enemySpawner.speedMultiplier += .05;
 			}
 		}
 		//Tell the enemy spawner to spawn a single enemy
@@ -295,7 +302,7 @@ package com.levels
 		}
 		protected function onKeyDown(event:KeyboardEvent):void{
 			//If the P key is pressed, pause the game
-			if((event.keyCode == 112 || event.keyCode == 80) && paused == false){
+			if((event.keyCode == 112 || event.keyCode == 80 || event.keyCode == 27) && paused == false){
 				pauseMenu = new PauseMenu(mainGame);
 				addChild(pauseMenu);
 				paused = true;
@@ -303,7 +310,7 @@ package com.levels
 					ally.paused = true;
 				}
 				TweenMax.pauseAll();
-				trace("Pressed escape");
+				trace("Pressed pause");
 			}
 		}
 		
@@ -331,7 +338,7 @@ package com.levels
 		private function onProjectileFired(event:ProjectileFired):void{
 			var touchLoc:Point = event.touch.getLocation(newCatapult);
 			if(!paused && newCatapult.isReloaded){
-				launchSound.play();
+				launchSound.play(0, 0, mainGame.effectsTransform);
 				newCatapult.shootBullet(touchLoc);
 			}
 		}
@@ -355,7 +362,7 @@ package com.levels
 							var explosion:FireExplosion = new FireExplosion(enemy.x, enemy.y, mainGame);
 							addChild(explosion);
 							
-							explSound.play(0, 0);
+							explSound.play(0, 0, mainGame.effectsTransform);
 							currency += enemy.value;
 							textField.text = ("Coins: " + currency.toString());
 
@@ -368,6 +375,12 @@ package com.levels
 							
 							//Destroy the enemy
 							enemy.destroy();
+							
+							enemiesDestroyed += 1;
+			
+							if(enemiesDestroyed >= killsToWin){
+								endGame();
+							}
 							
 						}
 						enemyHit = true;
@@ -382,7 +395,7 @@ package com.levels
 						var splash:SplashExplosion = new SplashExplosion(hitPoint.x, hitPoint.y, mainGame);
 						addChild(splash);
 						
-						splashSound.play();
+						splashSound.play(0, 0, mainGame.effectsTransform);
 					}
 					//If it didn't hit water, make it appear to hit ground
 					else{
@@ -390,6 +403,16 @@ package com.levels
 					}
 				}
 			}
+		}
+		private function endGame():void{
+			var gameWonMenu:GameWonMenu = new GameWonMenu(mainGame);
+			addChild(gameWonMenu);
+			paused = true;
+			for each(var ally:GenericAlly in allies){
+				ally.paused = true;
+			}
+			TweenMax.pauseAll();
+			trace("Game Won");
 		}
 		protected function onButtonPressed(event:MenuButtonPressed):void{
 			switch(event.buttonName){
@@ -400,6 +423,9 @@ package com.levels
 						for each(var ally:GenericAlly in allies){
 							ally.paused = false;
 						}
+					break;
+				case "Next Level":
+					mainGame.switchLevels("Main Menu Exit");
 					break;
 				case "Retry":
 					mainGame.switchLevels("Level 3");

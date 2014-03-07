@@ -6,7 +6,6 @@ package com.game{
 	
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
-	import flash.media.SoundTransform;
 	
 	import starling.display.DisplayObject;
 	import starling.display.Image;
@@ -16,6 +15,8 @@ package com.game{
 	import starling.utils.Color;
 	import com.levels.Level2;
 	import com.levels.Level3;
+	import com.ui.OptionsMenu;
+	import flash.media.SoundTransform;
 	
 	public class Game extends Sprite{	
 		private var currentLevel:DisplayObject;
@@ -35,8 +36,9 @@ package com.game{
 		//Music variables
 		private var menuMusic:Sound;
 		private var level1Music:Sound;
-		private var channel:SoundChannel;
-		public var soundTransform:SoundTransform;
+		public var musicChannel:SoundChannel;
+		public var musicTransform:SoundTransform;
+		public var effectsTransform:SoundTransform;
 		
 		//Load all gameplay assets
 		public var assets:AssetManager;
@@ -88,13 +90,15 @@ package com.game{
 			
 			var menu:MainMenu = new MainMenu(this);
 			
-			menuMusic = assets.getSound("frozenLoop");
-			soundTransform = new SoundTransform(.0);
+			menuMusic = assets.getSound("mainMenu");
+			musicTransform = new SoundTransform(.3);
 			
-			channel = menuMusic.play(0, 9999, soundTransform);
+			effectsTransform = new SoundTransform(.7);
+			
+			musicChannel = menuMusic.play(0, 9999, musicTransform);
 			
 			
-			level1Music = assets.getSound("happyArcade");
+			level1Music = assets.getSound("levelMusic_1");
 			
 			currentLevel = menu;
 			addChild(menu);
@@ -103,7 +107,6 @@ package com.game{
 			removeChild(loadingBarBack, true);
 			removeChild(loadingScreen, true);
 			
-			trace("Current Number of Children: " + this.numChildren);
 		}
 		public function switchLevels(levelName:String):void{
 			switch(levelName){
@@ -112,30 +115,37 @@ package com.game{
 					addChild(level);	
 					removeChild(currentLevel, true);
 					currentLevel = level;
-					channel.stop();
-					channel = level1Music.play(0, 9999, soundTransform);
+					musicChannel.stop();
+					musicChannel = level1Music.play(0, 9999, musicTransform);
 					break;
 				case "Level 2" :
 					var level2:Level2 = new Level2(this);
 					addChild(level2);	
 					removeChild(currentLevel, true);
 					currentLevel = level2;
-					channel.stop();
-					channel = level1Music.play(0, 9999, soundTransform);
+					musicChannel.stop();
+					musicChannel = level1Music.play(0, 9999, musicTransform);
 					break;
 				case "Level 3" :
 					var level3:Level3 = new Level3(this);
 					addChild(level3);	
 					removeChild(currentLevel, true);
 					currentLevel = level3;
-					channel.stop();
-					channel = level1Music.play(0, 9999, soundTransform);
+					musicChannel.stop();
+					musicChannel = level1Music.play(0, 9999, musicTransform);
 					break;
 				case "Level Select" :
 					var levelMenu:LevelSelect = new LevelSelect(this);
 					removeChild(currentLevel, true);
 					addChild(levelMenu);
 					currentLevel = levelMenu;
+					break;
+				case "Options" :
+					trace("Bring me to options menu");
+					var optionsMenu:OptionsMenu = new OptionsMenu(this);
+					removeChild(currentLevel, true);
+					addChild(optionsMenu);
+					currentLevel = optionsMenu;
 					break;
 				case "Main Menu" :
 					var mainMenu:MainMenu = new MainMenu(this);
@@ -148,8 +158,8 @@ package com.game{
 					removeChild(currentLevel, true);
 					addChild(mainMenu);
 					currentLevel = mainMenu;
-					channel.stop();
-					channel = menuMusic.play(0, 9999, soundTransform);
+					musicChannel.stop();
+					musicChannel = menuMusic.play(0, 9999, musicTransform);
 					break;
 			}
 		}

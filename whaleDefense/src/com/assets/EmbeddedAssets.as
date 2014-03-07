@@ -18,6 +18,11 @@ package com.assets
 		[Embed(source="../assets/textures/pauseBackground.png")]
 		public static const pauseBackground:Class;
 		
+		[Embed(source="../assets/textures/WhaleTitleAnim.xml",mimeType="application/octet-stream")]
+		public static const WhaleTitleAnimXml:Class;
+		[Embed(source="../assets/textures/WhaleTitleAnim.png")]
+		public static const WhaleTitleAnim:Class;
+		
 		[Embed(source="../assets/textures/Level1.xml",mimeType="application/octet-stream")]
 		public static const Level1Xml:Class;
 		[Embed(source="../assets/textures/Level1.png")]
@@ -46,20 +51,23 @@ package com.assets
 		public static const wavesBackground:Class;
 		
 		//-----Audio------
-		[Embed(source="../assets/audio/happyArcade.mp3")]
-		public static const happyArcade:Class;
+		[Embed(source="../assets/audio/levelMusic_1.mp3")]
+		public static const levelMusic_1:Class;
 		
-		[Embed(source="../assets/audio/frozenLoop.mp3")]
-		public static const frozenLoop:Class;
+		[Embed(source="../assets/audio/mainMenu.mp3")]
+		public static const mainMenu:Class;
 		
-		[Embed(source="../assets/audio/boom9.mp3")]
-		public static const boom9:Class;
+		[Embed(source="../assets/audio/explosion.mp3")]
+		public static const explosion:Class;
 		
 		[Embed(source="../assets/audio/splash.mp3")]
 		public static const splash:Class;
 		
 		[Embed(source="../assets/audio/woosh.mp3")]
 		public static const woosh:Class;
+		
+		[Embed(source="../assets/audio/sandHit.mp3")]
+		public static const sandHit:Class;
 		
 		//-----Particles-----
 		[Embed(source="../assets/particles/explosion.pex", mimeType="application/octet-stream")]

@@ -4,16 +4,18 @@ package com.ui
 	import com.game.Game;
 	
 	
-	import starling.core.Starling;
 	import starling.display.Image;
+	import starling.core.Starling;
 	import starling.display.Sprite;
 	import starling.events.Event;
 	import starling.textures.Texture;
+	import starling.display.MovieClip;
 	
 	public class MainMenu extends Sprite
 	{	
 		private var backImage:Image;
 		private var mainGame:Game;
+		private var whale:MovieClip;
 		
 		public function MainMenu(game:Game)
 		{
@@ -25,6 +27,14 @@ package com.ui
 			backImage.scaleX = 0.67;
 			backImage.scaleY = 0.67;
 			addChild(backImage);
+			
+			whale = new MovieClip(mainGame.assets.getTextures("WhaleTitleAnim_"), 2);
+			whale.loop = true;
+			whale.x = mainGame.stageWidth - whale.width - 50;
+			addChild(whale);
+			
+			whale.play();
+			Starling.juggler.add(whale);
 			
 			var newGameTexture:Texture = game.assets.getTexture("newGame");
 			var newGameImage:Image = new Image(newGameTexture);
@@ -52,14 +62,14 @@ package com.ui
 			
 			//Exit button only used on desktop app and mobile
 			
-			var exitTexture:Texture = game.assets.getTexture("Exit");
+		/*	var exitTexture:Texture = game.assets.getTexture("Exit");
 			var exitImage:Image = new Image(exitTexture);
 			
 			var exitButton:MenuButton = new MenuButton(100, 500, "Exit", exitImage);
 			exitButton.scaleX = .8;
 			exitButton.scaleY = .8;
 			addChild(exitButton);
-			
+		*/	
 			
 			//Add listener which waits for stage creation
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
@@ -84,6 +94,7 @@ package com.ui
 					mainGame.switchLevels("Level Select");
 					break;
 				case "Options":
+					mainGame.switchLevels("Options");
 					break;
 				case "Exit":
 					break;

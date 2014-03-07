@@ -7,27 +7,33 @@ package com.game
 	
 	import starling.display.MovieClip;
 	import starling.display.Sprite;
-	import starling.textures.TextureAtlas;
+	import flash.media.Sound;
 
 	
 	public class EnemySpawner extends Sprite
-	{
-		
-		
-		//The texture atlases used
-		public var enemyTextureAtlas:TextureAtlas;
-		
+	{	
 		private var enemyList:Array;
 		private var newEnemy:Enemy;
 		private var shores:Array;
+		
 		public var enemyPaths:Array;
+		
 		private var levelBase:Base;
 		private var mainGame:Game;
 		
+		private var sandHitSound:Sound;
+		
+		public var damageMultiplier:Number = 1.0;
+		public var speedMultiplier:Number = 1.0;
+		
 		//Contructor should take in two arrays, one for enemy spawn locations, one for shore locations
-		public function EnemySpawner(game:Game, shoreList:Array, paths:Array, mBase:Base){
+		public function EnemySpawner(game:Game, shoreList:Array, paths:Array, mBase:Base, speed:Number=1.0, damage:Number=1.0){
 			mainGame = game;
-
+			
+			speedMultiplier = speed;
+			damageMultiplier = damage;
+			
+			sandHitSound = mainGame.assets.getSound("sandHit");
 			
 			//Create the list to store enemies
 			enemyList = new Array();
@@ -61,6 +67,8 @@ package com.game
 			var newSprite:MovieClip = new MovieClip(mainGame.assets.getTextures("WhaleSprite"), 1);
 			newEnemy = new Enemy(0, 0, newSprite);
 			newEnemy.canDamage = true;
+			newEnemy.speed *= speedMultiplier;
+			newEnemy.damage *= damageMultiplier;
 			
 			addChild(newEnemy);
 			
@@ -92,6 +100,7 @@ package com.game
 			//Deal some damage to the base
 			if(!enemy.isDead){
 				levelBase.dealDamage(enemy.damage);
+				sandHitSound.play(0, 0, mainGame.effectsTransform);
 				trace("dealing damage");
 			}
 			
@@ -105,12 +114,26 @@ package com.game
 		//Calculates duration in seconds from a given speed
 		private function velocityToDuration(enemy:Enemy):Number{
 			var duration:Number;
-			var p1:Point = new Point(enemy.x, enemy.y);
-			var p2:Point = new Point(enemyPaths[enemy.targetPath][enemyPaths[enemy.targetPath].length - 1].x, 
-										enemyPaths[enemy.targetPath][enemyPaths[enemy.targetPath].length - 1].y);
 			
-			var distance:Number = Point.distance(p1, p2);
+			var prevPoint:Point;
+			var nextPoint:Point;
+			var distance:Number = 0;
 			
+			//Iterate through each point in the path and accumulate their distances
+			for each(var point:Object in enemyPaths[enemy.targetPath]){
+				//The next point to calculate
+				nextPoint = new Point(point.x, point.y);
+				
+				//As long as this isn't the first iteration, add some distance
+				if(prevPoint != null){
+					distance += Point.distance(prevPoint, nextPoint);
+				}
+				
+				//The point we just calculated becomes the base of the next calc
+				prevPoint = nextPoint;
+			}
+			
+			//The duration is the distance divided by the enemy's speed
 			duration = Math.abs(distance/enemy.speed);
 			return duration;
 		}

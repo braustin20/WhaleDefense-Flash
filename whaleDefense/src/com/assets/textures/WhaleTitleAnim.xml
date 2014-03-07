@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:7ea248b5e84a8911672b5969bc14cae5:82105d7fbb3dd3cb3b9af667d86af861:c955e7f58118611e73abeab727338cb3$ -->
+<TextureAtlas imagePath="WhaleTitleAnim.png">
+    <SubTexture name="WhaleTitleAnim_1" x="527" y="808" width="523" height="804"/>
+    <SubTexture name="WhaleTitleAnim_2" x="527" y="2" width="523" height="804"/>
+    <SubTexture name="WhaleTitleAnim_3" x="2" y="808" width="523" height="804"/>
+    <SubTexture name="WhaleTitleAnim_4" x="2" y="2" width="523" height="804"/>
+</TextureAtlas>

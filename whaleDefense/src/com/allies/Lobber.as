@@ -6,8 +6,6 @@ package com.allies
 	import com.game.PlayerProjectile;
 	import com.greensock.TimelineMax;
 	import com.greensock.easing.Linear;
-	import com.greensock.plugins.BezierThroughPlugin;
-	import com.greensock.plugins.TweenPlugin;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
@@ -85,7 +83,6 @@ package com.allies
 		private function onReloadComplete(event:TimerEvent):void{
 			//If there are enemies present, search through them
 			if(enemySpawner.enemiesList.length >= 1 && !paused){
-				launchSound.play(0, 1);
 				//Store currently targeted enemy
 				var targEnemy:Enemy;
 				//The distance to the closest enemy
@@ -109,6 +106,7 @@ package com.allies
 				
 					//Shoot a bullet at the specified coordinates
 					shootBullet(enemyLoc);
+					launchSound.play(0, 0, mainGame.effectsTransform);
 				}
 			}
 			timer.start();

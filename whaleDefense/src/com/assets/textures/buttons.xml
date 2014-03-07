@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:c032b7ec350e53be8af8eed6d36e2ea9:0b20af8a1215e13aade33ce77ddc4cb5:ae6de5c3337c17880e1330b16dab8236$ -->
+<!-- $TexturePacker:SmartUpdate:acf7a3b6595d9ab8a68854a3581cc337:ca5106ec05876fa127aaaf5296e2692b:ae6de5c3337c17880e1330b16dab8236$ -->
 <TextureAtlas imagePath="buttons.png">
-    <SubTexture name="Back" x="2" y="329" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
-    <SubTexture name="Exit" x="220" y="220" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
-    <SubTexture name="LevelButton1" x="165" y="471" width="161" height="140"/>
-    <SubTexture name="LevelButton2" x="2" y="438" width="161" height="140"/>
-    <SubTexture name="LevelButton3" x="220" y="329" width="161" height="140"/>
-    <SubTexture name="Options" x="2" y="220" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
-    <SubTexture name="Resume" x="220" y="111" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
-    <SubTexture name="Retry" x="2" y="111" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
-    <SubTexture name="levelSelect" x="220" y="2" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
-    <SubTexture name="newGame" x="2" y="2" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="Back" x="220" y="329" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="Exit" x="2" y="329" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="LevelButton1" x="328" y="438" width="161" height="140"/>
+    <SubTexture name="LevelButton2" x="165" y="438" width="161" height="140"/>
+    <SubTexture name="LevelButton3" x="2" y="438" width="161" height="140"/>
+    <SubTexture name="Options" x="220" y="220" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="Resume" x="2" y="220" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="Retry" x="220" y="111" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="levelSelect" x="2" y="111" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="newGame" x="220" y="2" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
+    <SubTexture name="nextLevel" x="2" y="2" width="216" height="107" frameX="0" frameY="-4" frameWidth="216" frameHeight="115"/>
 </TextureAtlas>
