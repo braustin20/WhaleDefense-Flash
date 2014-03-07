@@ -2,8 +2,6 @@ package com.game
 {	
 	import com.events.ProjectileFired;
 	
-	import flash.media.Sound;
-	
 	import starling.display.MovieClip;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -37,7 +35,7 @@ package com.game
 			this.alignPivot();
 		
 			//Set speed and damage hard coded for now
-			speed = 120;
+			speed = 100;
 			damage = 20;
 			
 			//Add a box which detects collisions

@@ -14,7 +14,7 @@ package com.game
 	import starling.utils.AssetManager;
 	
 
-	public class Cannon extends Sprite
+	public class Catapult extends Sprite
 	{
 		private var graphics:Image;
 		
@@ -27,7 +27,7 @@ package com.game
 		
 		public var velocity:Number;
 				
-		public function Cannon(xPos:Number, yPos:Number, game:Game)
+		public function Catapult(xPos:Number, yPos:Number, game:Game)
 		{
 			this.x = xPos;
 			this.y = yPos;
@@ -44,7 +44,6 @@ package com.game
 			//Move the sprite so that it's centered
 			graphics.x -= graphics.width/2;
 			graphics.y -= graphics.height/2;
-			graphics.rotation = .3;
 			addChild(graphics);
 			this.scaleX = .7;
 			this.scaleY = .7;

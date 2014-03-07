@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:dfb57f40d58e62961d1a1b1af44617e7:618a2750cb3c4729ba83f64b2302d2e5:0e738e3d94abdf74d3a21f81b162a92f$ -->
+<!-- $TexturePacker:SmartUpdate:e3c520f9091b272cbb06b02a4f2e9ed9:a0110ca1168a9fb767b53354fd4608db:0e738e3d94abdf74d3a21f81b162a92f$ -->
 <TextureAtlas imagePath="playerObjects_basic.png">
-    <SubTexture name="buildArea" x="153" y="2" width="100" height="94"/>
+    <SubTexture name="Lobber" x="153" y="140" width="101" height="105" frameX="0" frameY="-4" frameWidth="101" frameHeight="113"/>
+    <SubTexture name="buildArea" x="2" y="144" width="100" height="94"/>
     <SubTexture name="castleSm" x="2" y="2" width="149" height="140" frameX="-7" frameY="0" frameWidth="159" frameHeight="140"/>
-    <SubTexture name="rockSm" x="2" y="144" width="34" height="31"/>
-    <SubTexture name="shellapultSm" x="153" y="98" width="88" height="136"/>
+    <SubTexture name="rockSm" x="104" y="144" width="34" height="31"/>
+    <SubTexture name="shellapultSm" x="153" y="2" width="88" height="136"/>
 </TextureAtlas>

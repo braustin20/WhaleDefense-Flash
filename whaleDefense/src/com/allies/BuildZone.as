@@ -9,13 +9,14 @@ package com.allies
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import starling.textures.Texture;
 	
 	public class BuildZone extends Sprite
 	{
 		public var occupied:Boolean = false;
 		private var graphics:Image;
 		
-		public function BuildZone(xPos:Number, yPos:Number, sprite:Image)
+		public function BuildZone(xPos:Number, yPos:Number, sprite:Texture)
 		{
 			super();
 			
@@ -23,7 +24,7 @@ package com.allies
 			this.y = yPos;
 			this.alignPivot();
 				
-			graphics = sprite;
+			graphics = new Image(sprite);;
 			graphics.alignPivot();
 			graphics.scaleX = .8;
 			graphics.scaleY = .8;

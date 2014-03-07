@@ -14,29 +14,37 @@ package com.game{
 	import starling.display.Sprite;
 	import starling.utils.AssetManager;
 	import starling.utils.Color;
+	import com.levels.Level2;
+	import com.levels.Level3;
 	
 	public class Game extends Sprite{	
 		private var currentLevel:DisplayObject;
 		
+		//Loading screen assets
 		[Embed(source="../assets/textures/loadingBackground.png")]
 		private var loadingBackground:Class;
+		private var loadingScreen:Image
 		private var loadingBarBack:Quad;
 		private var loadingBar:Quad;
 		private var loadingBarMaxSize:Number = 900;
 		
 		//Store stage size
 		public var stageWidth:Number = 1280;
-		public var stageHeight:Number = 720;
+		public var stageHeight:Number = 682;
 		
+		//Music variables
 		private var menuMusic:Sound;
 		private var level1Music:Sound;
 		private var channel:SoundChannel;
 		public var soundTransform:SoundTransform;
 		
+		//Load all gameplay assets
 		public var assets:AssetManager;
 		
 		public function Game(){
-			var loadingScreen:Image = Image.fromBitmap(new loadingBackground());
+			//-------Loading Screen-------
+			//The loading screen background
+			loadingScreen = Image.fromBitmap(new loadingBackground());
 			loadingScreen.scaleX = .67;
 			loadingScreen.scaleY = .67;
 			addChild(loadingScreen);
@@ -77,10 +85,11 @@ package com.game{
 			});
 		}
 		protected function startGame():void{
+			
 			var menu:MainMenu = new MainMenu(this);
 			
 			menuMusic = assets.getSound("frozenLoop");
-			soundTransform = new SoundTransform(.3);
+			soundTransform = new SoundTransform(.0);
 			
 			channel = menuMusic.play(0, 9999, soundTransform);
 			
@@ -89,6 +98,11 @@ package com.game{
 			
 			currentLevel = menu;
 			addChild(menu);
+			
+			removeChild(loadingBar, true);
+			removeChild(loadingBarBack, true);
+			removeChild(loadingScreen, true);
+			
 			trace("Current Number of Children: " + this.numChildren);
 		}
 		public function switchLevels(levelName:String):void{
@@ -100,21 +114,34 @@ package com.game{
 					currentLevel = level;
 					channel.stop();
 					channel = level1Music.play(0, 9999, soundTransform);
-					trace("Current Number of Children: " + this.numChildren);
+					break;
+				case "Level 2" :
+					var level2:Level2 = new Level2(this);
+					addChild(level2);	
+					removeChild(currentLevel, true);
+					currentLevel = level2;
+					channel.stop();
+					channel = level1Music.play(0, 9999, soundTransform);
+					break;
+				case "Level 3" :
+					var level3:Level3 = new Level3(this);
+					addChild(level3);	
+					removeChild(currentLevel, true);
+					currentLevel = level3;
+					channel.stop();
+					channel = level1Music.play(0, 9999, soundTransform);
 					break;
 				case "Level Select" :
 					var levelMenu:LevelSelect = new LevelSelect(this);
 					removeChild(currentLevel, true);
 					addChild(levelMenu);
 					currentLevel = levelMenu;
-					trace("Current Number of Children: " + this.numChildren);
 					break;
 				case "Main Menu" :
 					var mainMenu:MainMenu = new MainMenu(this);
 					removeChild(currentLevel, true);
 					addChild(mainMenu);
 					currentLevel = mainMenu;
-					trace("Current Number of Children: " + this.numChildren);
 					break;
 				case "Main Menu Exit" :
 					mainMenu = new MainMenu(this);
@@ -123,7 +150,6 @@ package com.game{
 					currentLevel = mainMenu;
 					channel.stop();
 					channel = menuMusic.play(0, 9999, soundTransform);
-					trace("Current Number of Children: " + this.numChildren);
 					break;
 			}
 		}

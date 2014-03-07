@@ -7,7 +7,7 @@ package com.assets
 		[Embed(source="../assets/textures/buttons.png")]
 		public static const buttons:Class;
 		
-		[Embed(source="../assets/textures/buttons.xml",mimeType="application/octet-stream")]
+		[Embed(source="/textures/buttons.xml",mimeType="application/octet-stream")]
 		public static const buttonsXml:Class;
 		
 		[Embed(source="../assets/textures/basicWhale.xml",mimeType="application/octet-stream")]
@@ -18,10 +18,20 @@ package com.assets
 		[Embed(source="../assets/textures/pauseBackground.png")]
 		public static const pauseBackground:Class;
 		
-		[Embed(source="../assets/textures/level1.xml",mimeType="application/octet-stream")]
+		[Embed(source="../assets/textures/Level1.xml",mimeType="application/octet-stream")]
 		public static const Level1Xml:Class;
-		[Embed(source="../assets/textures/level1.png")]
-		public static const level1:Class;
+		[Embed(source="../assets/textures/Level1.png")]
+		public static const Level1:Class;
+		
+		[Embed(source="../assets/textures/Level2.xml",mimeType="application/octet-stream")]
+		public static const Level2Xml:Class;
+		[Embed(source="../assets/textures/Level2.png")]
+		public static const Level2:Class;
+		
+		[Embed(source="../assets/textures/Level3.xml",mimeType="application/octet-stream")]
+		public static const Level3Xml:Class;
+		[Embed(source="../assets/textures/Level3.png")]
+		public static const Level3:Class;
 		
 		[Embed(source="../assets/textures/playerObjects_basic.xml",mimeType="application/octet-stream")]
 		public static const BasicObjectsXml:Class;

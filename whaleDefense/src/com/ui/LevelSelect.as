@@ -32,10 +32,26 @@ package com.ui
 			var Level1Texture:Texture = game.assets.getTexture("LevelButton1");
 			var Level1Image:Image = new Image(Level1Texture);
 			
-			var Level1Button:MenuButton = new MenuButton(200, 200, "Level 1", Level1Image);
+			var Level1Button:MenuButton = new MenuButton(450, 200, "Level 1", Level1Image);
 			Level1Button.scaleX = .8;
 			Level1Button.scaleY = .8;
 			addChild(Level1Button);
+			
+			var Level2Texture:Texture = game.assets.getTexture("LevelButton2");
+			var Level2Image:Image = new Image(Level2Texture);
+			
+			var Level2Button:MenuButton = new MenuButton(650, 200, "Level 2", Level2Image);
+			Level2Button.scaleX = .8;
+			Level2Button.scaleY = .8;
+			addChild(Level2Button);
+			
+			var Level3Texture:Texture = game.assets.getTexture("LevelButton3");
+			var Level3Image:Image = new Image(Level3Texture);
+			
+			var Level3Button:MenuButton = new MenuButton(850, 200, "Level 3", Level3Image);
+			Level3Button.scaleX = .8;
+			Level3Button.scaleY = .8;
+			addChild(Level3Button);
 			
 			
 			
@@ -66,6 +82,12 @@ package com.ui
 			switch(event.buttonName){
 				case "Level 1" :
 					mainGame.switchLevels("Level 1");
+					break;
+				case "Level 2" :
+					mainGame.switchLevels("Level 2");
+					break;
+				case "Level 3" :
+					mainGame.switchLevels("Level 3");
 					break;
 				case "Back":
 					mainGame.switchLevels("Main Menu");

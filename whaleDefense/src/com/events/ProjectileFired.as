@@ -18,6 +18,7 @@ package com.events
 			super(type, bubbles);
 			isPlayerProj = player;
 			touchData = t;
+
 			
 		}
 		//Getter methods used when passing data to the EventListener

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
+<!-- $TexturePacker:SmartUpdate:2a9ee6083036d2ab6baffb20b9bc5e64:b4dc91ff3d7cd7d25b497decedec8fee:ddded3fbd850f7760720a93981d0c010$ -->
+<TextureAtlas imagePath="Level3.png">
+    <SubTexture name="Level3_shore" x="2" y="728" width="1286" height="704"/>
+    <SubTexture name="Level3_water" x="2" y="2" width="1286" height="724"/>
+</TextureAtlas>

@@ -38,12 +38,11 @@ package com.levels
 	import starling.textures.Texture;
 	import starling.utils.Color;
 	
-	public class Level1 extends Sprite
+	public class Level2 extends Sprite
 	{
 		public var levelBase:Base;
 		
-		private var newCannon:Catapult;
-		public var selectedCannon:Catapult;
+		private var newCatapult:Catapult;
 		
 		public var buildZones:Array;
 		
@@ -75,7 +74,7 @@ package com.levels
 		private var mainGame:Game;
 		private var pauseMenu:PauseMenu;
 		
-		public function Level1(game:Game)
+		public function Level2(game:Game)
 		{	
 			mainGame = game;
 			init();
@@ -85,23 +84,22 @@ package com.levels
 			splashSound = mainGame.assets.getSound("splash");
 			launchSound = mainGame.assets.getSound("woosh");
 			
-			//Place the ocean object
-			var waterTexture:Texture = mainGame.assets.getTexture("Level1_water");
+			var waterTexture:Texture = mainGame.assets.getTexture("Level2_water");
 			var waterImage:Image = new Image(waterTexture);
-			bottomLayer = new LevelBottomLayer(waterImage, "Level1_water");
+			bottomLayer = new LevelBottomLayer(waterImage, "Level2_water");
 			addChild(bottomLayer);
 			
-			//Place the shore object
-			var shoreTexture:Texture = mainGame.assets.getTexture("Level1_shore");
+			
+			var shoreTexture:Texture = mainGame.assets.getTexture("Level2_shore");
 			var shoreImage:Image = new Image(shoreTexture);
-			topLayer = new LevelTopLayer(shoreImage, "Level1_shore");
-			topLayer.y = (mainGame.stageHeight - topLayer.height);
+			topLayer = new LevelTopLayer(shoreImage, "Level2_shore");
 			addChild(topLayer);
 			
 			//Add the base that the player has to defend
 			var baseTexture:Texture = mainGame.assets.getTexture("castleSm");
 			var baseImage:Image = new Image(baseTexture);
-			levelBase = new Base(mainGame.stageWidth/2, (mainGame.stageHeight - 95), baseImage);
+			levelBase = new Base(1132, 617, baseImage);
+			levelBase.rotation = -1.57;
 			addChild(levelBase);
 			
 			//Create the areas where the player is able to build defenses
@@ -109,11 +107,27 @@ package com.levels
 			
 			var buildTexture:Texture = mainGame.assets.getTexture("buildArea");
 			
-			var newBuildZone:BuildZone = new BuildZone(mainGame.stageWidth/2 + 150, (mainGame.stageHeight - 95), buildTexture);
+			var newBuildZone:BuildZone = new BuildZone(763, 135, buildTexture);
 			buildZones.push(newBuildZone);
 			addChild(newBuildZone);
 			
-			newBuildZone = new BuildZone(150, (mainGame.stageHeight - 95), buildTexture);
+			newBuildZone = new BuildZone(446, 238, buildTexture);
+			buildZones.push(newBuildZone);
+			addChild(newBuildZone);
+			
+			newBuildZone = new BuildZone(195, 279, buildTexture);
+			buildZones.push(newBuildZone);
+			addChild(newBuildZone);
+			
+			newBuildZone = new BuildZone(505, 466, buildTexture);
+			buildZones.push(newBuildZone);
+			addChild(newBuildZone);
+			
+			newBuildZone = new BuildZone(1035, 366, buildTexture);
+			buildZones.push(newBuildZone);
+			addChild(newBuildZone);
+			
+			newBuildZone = new BuildZone(967, 513, buildTexture);
 			buildZones.push(newBuildZone);
 			addChild(newBuildZone);
 			
@@ -122,7 +136,7 @@ package com.levels
 			//Create a list of landing zones
 			shoreList = new Array();
 			//Spawn some shores
-			newShore = new Shore(width/2, (height - 200));
+			newShore = new Shore(1023, 625);
 			addChild(newShore);
 			shoreList.push(newShore);
 			
@@ -135,12 +149,8 @@ package com.levels
 			
 			
 			//Create a new cannon
-			newCannon = new Catapult((width/2 - 250), (height - 260), mainGame);
-			addChild(newCannon);
-			
-			//Set the last created cannon as the current selected 
-			//replace this later with mouse selection
-			selectedCannon = newCannon;
+			newCatapult = new Catapult(1126, 480, mainGame);
+			addChild(newCatapult);
 			
 			//The "score" keeper
 			textField = new TextField(220, 40, ("Coins: " + "0"), "Arial", 24, Color.RED);
@@ -187,16 +197,27 @@ package com.levels
 			pathArray = new Array();
 			
 			//Make your paths here, the more the better.
-			newPath = new Array({x:100, y:-100},
-				{x:200, y:250},
+			newPath = new Array({x:159, y:-100},
+				{x:159, y:4},
+				{x:602, y:9},
+				{x:1112, y:53},
+				{x:1101, y:176},
+				{x:815, y:294},
+				{x:481, y:347},
+				{x:198, y:441},
+				{x:467, y:615},
 				{x:shores[0].x, y:shores[0].y});
 			pathArray.push(newPath);
 			
-			newPath = new Array({x:1100, y:-100},
-				{x:1000, y:250},
+			newPath = new Array({x:1140, y:-100},
+				{x:1101, y:176},
+				{x:815, y:294},
+				{x:481, y:347},
+				{x:198, y:441},
+				{x:467, y:615},
 				{x:shores[0].x, y:shores[0].y});
 			pathArray.push(newPath);
-			
+
 			return pathArray;
 		}
 		
@@ -217,9 +238,10 @@ package com.levels
 			//Used for game loop
 			this.addEventListener(KeyboardEvent.KEY_DOWN, this.onKeyDown);
 			
-			this.addEventListener(TouchEvent.TOUCH, onTouch);
 			
 			this.addEventListener(MenuButtonPressed.PRESSED, onButtonPressed);
+			
+			this.addEventListener(TouchEvent.TOUCH, onTouch);
 			
 			//Remove the uneeded stage creation listener
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
@@ -243,6 +265,7 @@ package com.levels
 			}
 		}
 		protected function onKeyDown(event:KeyboardEvent):void{
+			//If the P key is pressed, pause the game
 			if((event.keyCode == 112 || event.keyCode == 80) && paused == false){
 				pauseMenu = new PauseMenu(mainGame);
 				addChild(pauseMenu);
@@ -253,11 +276,6 @@ package com.levels
 				TweenMax.pauseAll();
 				trace("Pressed escape");
 			}
-			/*else if(event.keyCode == 27 && paused == true){
-				trace("Pressed escape");
-				TweenMax.resumeAll();
-				paused = false;
-			}*/
 		}
 		
 		//Called whenever a build zone is touched
@@ -282,10 +300,10 @@ package com.levels
 		}
 		//Called when a shot has been fired into an object which accepts shots
 		private function onProjectileFired(event:ProjectileFired):void{
-			var touchLoc:Point = event.touch.getLocation(selectedCannon);
-			if(!paused && selectedCannon.isReloaded){
+			var touchLoc:Point = event.touch.getLocation(newCatapult);
+			if(!paused && newCatapult.isReloaded){
 				launchSound.play();
-				selectedCannon.shootBullet(touchLoc);
+				newCatapult.shootBullet(touchLoc);
 			}
 		}
 		//This is typically called when a player bullet finishes it's animation
@@ -337,7 +355,7 @@ package com.levels
 						
 						splashSound.play();
 					}
-						//If it didn't hit water, make it appear to hit ground
+					//If it didn't hit water, make it appear to hit ground
 					else{
 						//Rock ground hit here
 					}
@@ -355,7 +373,7 @@ package com.levels
 						}
 					break;
 				case "Retry":
-					mainGame.switchLevels("Level 1");
+					mainGame.switchLevels("Level 2");
 					break;
 				case "Exit":
 					mainGame.switchLevels("Main Menu Exit");

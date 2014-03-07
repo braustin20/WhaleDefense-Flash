@@ -55,7 +55,7 @@ package com.allies
 			launchSound = assets.getSound("woosh");
 			
 			//Load the catapault sprite
-			var cannonTexture:Texture = assets.getTexture("shellapultSm");
+			var cannonTexture:Texture = assets.getTexture("Lobber");
 			var cannonImage:Image = new Image(cannonTexture);
 			
 			graphics = cannonImage;
@@ -95,19 +95,21 @@ package com.allies
 					//Do the distance calculation with global coordinates
 					var dist:Number = distanceBetween(globalToLocal(new Point(curEnemy.x, curEnemy.y)));
 					//If the distance is the lowest so far, or this is the first one (0) then assign targeted enemy
-					if(dist < smallestDist || smallestDist == 0){
+					if((dist < smallestDist || smallestDist == 0)){
 						//Make sure the enemy isn't invulnerable
-						if(curEnemy.canDamage){
+						if(curEnemy.canDamage && (curEnemy.x > 0 && curEnemy.y > 0)){
 							smallestDist = dist;
 							targEnemy = curEnemy;
 						}
 					}
 				}
-				//Now that we have our target, grab it's coordinates
-				var enemyLoc:Point = new Point(targEnemy.x, targEnemy.y);
+				if(targEnemy != null){
+					//Now that we have our target, grab it's coordinates
+					var enemyLoc:Point = new Point(targEnemy.x, targEnemy.y);
 				
-				//Shoot a bullet at the specified coordinates
-				shootBullet(enemyLoc);
+					//Shoot a bullet at the specified coordinates
+					shootBullet(enemyLoc);
+				}
 			}
 			timer.start();
 		}
