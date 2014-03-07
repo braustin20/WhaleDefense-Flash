@@ -35,10 +35,11 @@ package com.game{
 		
 		//Music variables
 		private var menuMusic:Sound;
-		private var level1Music:Sound;
+		private var levelMusic1:Sound;
 		public var musicChannel:SoundChannel;
 		public var musicTransform:SoundTransform;
 		public var effectsTransform:SoundTransform;
+		private var currentSong:String;
 		
 		//Load all gameplay assets
 		public var assets:AssetManager;
@@ -96,9 +97,9 @@ package com.game{
 			effectsTransform = new SoundTransform(.7);
 			
 			musicChannel = menuMusic.play(0, 9999, musicTransform);
+			currentSong = "mainMenu";
 			
-			
-			level1Music = assets.getSound("levelMusic_1");
+			levelMusic1 = assets.getSound("levelMusic_1");
 			
 			currentLevel = menu;
 			addChild(menu);
@@ -115,24 +116,33 @@ package com.game{
 					addChild(level);	
 					removeChild(currentLevel, true);
 					currentLevel = level;
-					musicChannel.stop();
-					musicChannel = level1Music.play(0, 9999, musicTransform);
+					if(currentSong != "levelMusic_1"){
+						musicChannel.stop();
+						musicChannel = levelMusic1.play(0, 9999, musicTransform);
+						currentSong = "levelMusic_1";
+					}
 					break;
 				case "Level 2" :
 					var level2:Level2 = new Level2(this);
 					addChild(level2);	
 					removeChild(currentLevel, true);
 					currentLevel = level2;
-					musicChannel.stop();
-					musicChannel = level1Music.play(0, 9999, musicTransform);
+					if(currentSong != "levelMusic_1"){
+						musicChannel.stop();
+						musicChannel = levelMusic1.play(0, 9999, musicTransform);
+						currentSong = "levelMusic_1";
+					}
 					break;
 				case "Level 3" :
 					var level3:Level3 = new Level3(this);
 					addChild(level3);	
 					removeChild(currentLevel, true);
 					currentLevel = level3;
-					musicChannel.stop();
-					musicChannel = level1Music.play(0, 9999, musicTransform);
+					if(currentSong != "levelMusic_1"){
+						musicChannel.stop();
+						musicChannel = levelMusic1.play(0, 9999, musicTransform);
+						currentSong = "levelMusic_1";
+					}
 					break;
 				case "Level Select" :
 					var levelMenu:LevelSelect = new LevelSelect(this);
@@ -158,8 +168,11 @@ package com.game{
 					removeChild(currentLevel, true);
 					addChild(mainMenu);
 					currentLevel = mainMenu;
-					musicChannel.stop();
-					musicChannel = menuMusic.play(0, 9999, musicTransform);
+					if(currentSong != "mainMenu"){
+						musicChannel.stop();
+						musicChannel = menuMusic.play(0, 9999, musicTransform);
+						currentSong = "mainMenu";
+					}
 					break;
 			}
 		}

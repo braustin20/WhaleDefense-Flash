@@ -56,7 +56,7 @@ package com.game
 		//Once the stage is created, add the remaining listeners
 		public function onAddedToStage(event:Event):void{	
 			//Used for game loop
-			stage.addEventListener(Event.ENTER_FRAME, this.onUpdate);
+			this.addEventListener(Event.ENTER_FRAME, this.onUpdate);
 		}
 		//Called from an outside class to do damage to this base
 		public function dealDamage(dmg:Number):void{
