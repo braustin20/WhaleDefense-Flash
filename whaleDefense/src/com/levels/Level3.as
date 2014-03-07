@@ -286,12 +286,12 @@ package com.levels
 			//Touch data when clicked or tapped down
 			var touchDown:Touch = event.getTouch(this, TouchPhase.ENDED);
 			
-			
+			trace("touched");
 			//If tapped or clicked, test fire the current cannon at the cursor location
 			if (touchDown && getBounds(this).containsPoint(touchDown.getLocation(this))){
-				
 				//Get the pixel from the water layer, which is at the point of impact
 				var color:uint = this.bottomLayer.layerBmpData.getPixel32(touchDown.getLocation(this).x, touchDown.getLocation(this).y);
+				
 				//If this color is visible within reason, and not transparent, make a splash
 				if (Color.getAlpha(color) > alphaCutoff) {
 					//Dispatch the event and denote who was the shooter
