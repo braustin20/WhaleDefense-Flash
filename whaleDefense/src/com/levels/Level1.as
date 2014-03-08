@@ -27,6 +27,7 @@ package com.levels
 	import flash.media.Sound;
 	import flash.utils.Timer;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -166,6 +167,9 @@ package com.levels
 				for each(var ally:GenericAlly in allies){
 					ally.paused = true;
 				}
+				for each(var enemy:Enemy in enemySpawner.enemiesList){
+					enemy.graphics.pause();
+				}
 				TweenMax.pauseAll();
 			}
 			if(enemySpawner.enemiesList.length < 20 && !isSpawning && !paused){
@@ -258,6 +262,10 @@ package com.levels
 					ally.paused = true;
 				}
 				TweenMax.pauseAll();
+				for each(var enemy:Enemy in enemySpawner.enemiesList){
+					enemy.graphics.pause();
+				}
+				
 				trace("Pressed pause");
 			}
 			/*else if(event.keyCode == 27 && paused == true){
@@ -362,6 +370,9 @@ package com.levels
 			for each(var ally:GenericAlly in allies){
 				ally.paused = true;
 			}
+			for each(var enemy:Enemy in enemySpawner.enemiesList){
+				enemy.graphics.pause();
+			}
 			TweenMax.pauseAll();
 			trace("Game Won");
 		}
@@ -373,6 +384,9 @@ package com.levels
 						TweenMax.resumeAll();
 						for each(var ally:GenericAlly in allies){
 							ally.paused = false;
+						}
+						for each(var enemy:Enemy in enemySpawner.enemiesList){
+							enemy.graphics.play();
 						}
 					break;
 				case "Next Level":

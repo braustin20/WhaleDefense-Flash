@@ -84,7 +84,7 @@ package com.levels
 		}
 		protected function init():void{
 			enemiesDestroyed = 0;
-			killsToWin = 45;
+			killsToWin = 65;
 			
 			explSound = mainGame.assets.getSound("explosion");
 			splashSound = mainGame.assets.getSound("splash");
@@ -176,11 +176,14 @@ package com.levels
 				for each(var ally:GenericAlly in allies){
 					ally.paused = true;
 				}
+				for each(var enemy:Enemy in enemySpawner.enemiesList){
+					enemy.graphics.pause();
+				}
 				TweenMax.pauseAll();
 			}
 			if(enemySpawner.enemiesList.length < 20 && !isSpawning && !paused){
 				//Pick a random time between spawns
-				var randTime:Number = Math.floor(Math.random() * 2000) + 750;
+				var randTime:Number = Math.floor(Math.random() * 1500) + 350;
 				
 				isSpawning = true;
 				var spawnTimer:Timer = new Timer(randTime, 1);
@@ -309,6 +312,9 @@ package com.levels
 				for each(var ally:GenericAlly in allies){
 					ally.paused = true;
 				}
+				for each(var enemy:Enemy in enemySpawner.enemiesList){
+					enemy.graphics.pause();
+				}
 				TweenMax.pauseAll();
 				trace("Pressed pause");
 			}
@@ -411,6 +417,9 @@ package com.levels
 			for each(var ally:GenericAlly in allies){
 				ally.paused = true;
 			}
+			for each(var enemy:Enemy in enemySpawner.enemiesList){
+				enemy.graphics.pause();
+			}
 			TweenMax.pauseAll();
 			trace("Game Won");
 		}
@@ -422,6 +431,9 @@ package com.levels
 						TweenMax.resumeAll();
 						for each(var ally:GenericAlly in allies){
 							ally.paused = false;
+						}
+						for each(var enemy:Enemy in enemySpawner.enemiesList){
+							enemy.graphics.play();
 						}
 					break;
 				case "Next Level":

@@ -64,7 +64,7 @@ package com.game
 			TweenMax.to(enemy, velocityToDuration(enemy), {bezierThrough:enemyPaths[rand], orientToBezier:[["x", "y", "rotation", 1.5, 1]], ease:Linear.easeNone, onComplete:removeFromShorePath, onCompleteParams:[enemy]});
 		}
 		public function createEnemy():void{		
-			var newSprite:MovieClip = new MovieClip(mainGame.assets.getTextures("WhaleSprite"), 1);
+			var newSprite:MovieClip = new MovieClip(mainGame.assets.getTextures("WhaleSpriteAnim_"), 3.5);
 			newEnemy = new Enemy(0, 0, newSprite);
 			newEnemy.canDamage = true;
 			newEnemy.speed *= speedMultiplier;

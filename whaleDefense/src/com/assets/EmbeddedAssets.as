@@ -10,11 +10,6 @@ package com.assets
 		[Embed(source="/textures/buttons.xml",mimeType="application/octet-stream")]
 		public static const buttonsXml:Class;
 		
-		[Embed(source="../assets/textures/basicWhale.xml",mimeType="application/octet-stream")]
-		public static const basicWhaleXml:Class;
-		[Embed(source="../assets/textures/basicWhale.png")]
-		public static const basicWhale:Class;
-		
 		[Embed(source="../assets/textures/pauseBackground.png")]
 		public static const pauseBackground:Class;
 		
@@ -22,6 +17,11 @@ package com.assets
 		public static const WhaleTitleAnimXml:Class;
 		[Embed(source="../assets/textures/WhaleTitleAnim.png")]
 		public static const WhaleTitleAnim:Class;
+		
+		[Embed(source="../assets/textures/WhaleSpriteAnim.xml",mimeType="application/octet-stream")]
+		public static const WhaleSpriteAnimXml:Class;
+		[Embed(source="../assets/textures/WhaleSpriteAnim.png")]
+		public static const WhaleSpriteAnim:Class;
 		
 		[Embed(source="../assets/textures/Level1.xml",mimeType="application/octet-stream")]
 		public static const Level1Xml:Class;

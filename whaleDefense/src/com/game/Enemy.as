@@ -3,6 +3,7 @@ package com.game
 	import com.events.ProjectileFired;
 	
 	import starling.display.MovieClip;
+	import starling.core.Starling;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -51,7 +52,14 @@ package com.game
 			graphics = spriteGraphics;
 			//Center the pivot
 			graphics.alignPivot();
+			
+			graphics.scaleX = .35;
+			graphics.scaleY = .35;
 			addChild(graphics);
+			
+			graphics.loop = true;
+			graphics.play();
+			Starling.juggler.add(graphics);
 
 			//Additional positioning of hitbox in case of weird graphic
 			hitBox.x = graphics.x - 5;
