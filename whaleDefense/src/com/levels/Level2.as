@@ -26,6 +26,7 @@ package com.levels
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.media.Sound;
+	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
@@ -276,7 +277,7 @@ package com.levels
 		}
 		protected function onKeyDown(event:KeyboardEvent):void{
 			//If the P key is pressed, pause the game
-			if((event.keyCode == 112 || event.keyCode == 80 || event.keyCode == 27) && paused == false){
+			if((event.keyCode == 112 || event.keyCode == 80 || event.keyCode == 27 || event.keyCode ==  Keyboard.MENU) && paused == false){
 				pauseMenu = new PauseMenu(mainGame);
 				addChild(pauseMenu);
 				paused = true;

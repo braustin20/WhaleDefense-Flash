@@ -27,6 +27,7 @@ package com.levels
 	import flash.media.Sound;
 	import flash.utils.Timer;
 	
+	import flash.ui.Keyboard;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -254,7 +255,7 @@ package com.levels
 			}
 		}
 		protected function onKeyDown(event:KeyboardEvent):void{
-			if((event.keyCode == 112 || event.keyCode == 80 || event.keyCode == 27) && paused == false){
+			if((event.keyCode == 112 || event.keyCode == 80 || event.keyCode == 27 || event.keyCode ==  Keyboard.MENU) && paused == false){
 				pauseMenu = new PauseMenu(mainGame);
 				addChild(pauseMenu);
 				paused = true;
@@ -300,7 +301,7 @@ package com.levels
 			var touchLoc:Point = event.touch.getLocation(selectedCannon);
 			if(!paused && selectedCannon.isReloaded){
 				launchSound.play(0, 0, mainGame.effectsTransform);
-				selectedCannon.shootMulti(touchLoc);
+				selectedCannon.shootBasic(touchLoc);
 			}
 		}
 		//This is typically called when a player bullet finishes it's animation

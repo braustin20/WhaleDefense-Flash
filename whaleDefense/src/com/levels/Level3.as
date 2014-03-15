@@ -26,6 +26,7 @@ package com.levels
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.media.Sound;
+	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	
 	import starling.display.Image;
@@ -289,7 +290,6 @@ package com.levels
 			//Touch data when clicked or tapped down
 			var touchDown:Touch = event.getTouch(this, TouchPhase.ENDED);
 			
-			trace("touched");
 			//If tapped or clicked, test fire the current cannon at the cursor location
 			if (touchDown && getBounds(this).containsPoint(touchDown.getLocation(this))){
 				//Get the pixel from the water layer, which is at the point of impact
@@ -305,7 +305,7 @@ package com.levels
 		}
 		protected function onKeyDown(event:KeyboardEvent):void{
 			//If the P key is pressed, pause the game
-			if((event.keyCode == 112 || event.keyCode == 80 || event.keyCode == 27) && paused == false){
+			if((event.keyCode == 112 || event.keyCode == 80 || event.keyCode == 27 || event.keyCode ==  Keyboard.MENU) && paused == false){
 				pauseMenu = new PauseMenu(mainGame);
 				addChild(pauseMenu);
 				paused = true;

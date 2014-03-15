@@ -1,22 +1,23 @@
 package com.game{
 	import com.assets.EmbeddedAssets;
 	import com.levels.Level1;
+	import com.levels.Level2;
+	import com.levels.Level3;
 	import com.ui.LevelSelect;
 	import com.ui.MainMenu;
+	import com.ui.OptionsMenu;
 	
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
 	
+	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.utils.AssetManager;
 	import starling.utils.Color;
-	import com.levels.Level2;
-	import com.levels.Level3;
-	import com.ui.OptionsMenu;
-	import flash.media.SoundTransform;
 	
 	public class Game extends Sprite{	
 		private var currentLevel:DisplayObject;
@@ -108,6 +109,7 @@ package com.game{
 			removeChild(loadingBarBack, true);
 			removeChild(loadingScreen, true);
 			
+			trace("RENDERER: " + Starling.current.context.driverInfo);		
 		}
 		public function switchLevels(levelName:String):void{
 			switch(levelName){
