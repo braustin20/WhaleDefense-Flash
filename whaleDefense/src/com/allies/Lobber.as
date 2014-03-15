@@ -3,7 +3,7 @@ package com.allies
 	import com.game.Enemy;
 	import com.game.EnemySpawner;
 	import com.game.Game;
-	import com.game.PlayerProjectile;
+	import com.game.PlayerBasicProjectile;
 	import com.greensock.TimelineMax;
 	import com.greensock.easing.Linear;
 	
@@ -20,7 +20,7 @@ package com.allies
 	public class Lobber extends GenericAlly
 	{
 		private var graphics:Image;
-		private var newPlayerProjectile:PlayerProjectile;
+		private var newPlayerProjectile:PlayerBasicProjectile;
 		
 		//Reload time in ms
 		private var reloadTime:Number = 5000;
@@ -117,10 +117,10 @@ package com.allies
 
 			//Load a new image for the projectile on each shot
 			var projTexture:Texture = assets.getTexture("rockSm");
-			var projImage:Image = new Image(projTexture);
+	//		var projImage:Image = new Image(projTexture);
 			
 			//Add a newPlayerProjectile relative to this cannon
-			newPlayerProjectile = new PlayerProjectile(0, 0, projImage);
+			newPlayerProjectile = new PlayerBasicProjectile(0, 0, projTexture);
 			
 			addChild(newPlayerProjectile);
 			
@@ -144,7 +144,7 @@ package com.allies
 			return distance;
 		}
 		//Calculates duration in seconds from a given speed
-		private function velocityToDuration(p2:Point, proj:PlayerProjectile):Number{
+		private function velocityToDuration(p2:Point, proj:PlayerBasicProjectile):Number{
 			var duration:Number;
 			var p1:Point = new Point(proj.x, proj.y);
 			

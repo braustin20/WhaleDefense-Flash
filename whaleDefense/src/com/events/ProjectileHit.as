@@ -10,10 +10,10 @@ package com.events
 		
 		//The values that we want to pass through with this Event
 		private var hitProjectile:GenericProjectile;
-		private var isPlayerProj:Boolean;
+		private var isPlayerProj:String;
 		
 		//Constructor that stores data which can be passed on later
-		public function ProjectileHit(type:String, player:Boolean=false, proj:GenericProjectile=null, bubbles:Boolean=false)
+		public function ProjectileHit(type:String, player:String="Generic", proj:GenericProjectile=null, bubbles:Boolean=false)
 		{
 			super(type, bubbles);
 			hitProjectile = proj;
@@ -24,7 +24,7 @@ package com.events
 		public function get projectile():GenericProjectile{
 			return hitProjectile;
 		}
-		public function get isPlayer():Boolean{
+		public function get isPlayer():String{
 			return isPlayerProj;
 		}
 	}

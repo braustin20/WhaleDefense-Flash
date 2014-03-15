@@ -300,7 +300,7 @@ package com.levels
 			var touchLoc:Point = event.touch.getLocation(selectedCannon);
 			if(!paused && selectedCannon.isReloaded){
 				launchSound.play(0, 0, mainGame.effectsTransform);
-				selectedCannon.shootBullet(touchLoc);
+				selectedCannon.shootMulti(touchLoc);
 			}
 		}
 		//This is typically called when a player bullet finishes it's animation
@@ -319,30 +319,34 @@ package com.levels
 					if(tempProjectile.graphics.getBounds(stage).intersects(enemy.hitBox.getBounds(stage))){
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
-							var explosion:FireExplosion = new FireExplosion(enemy.x, enemy.y, mainGame);
-							addChild(explosion);
-							
-							explSound.play(0, 0, mainGame.effectsTransform);
-							currency += enemy.value;
-							textField.text = ("Coins: " + currency.toString());
-
-							//Set the enemy to dead, so that they don't make a path to the base
-							enemy.isDead = true;
-							
-							//Find it's index and remove it from the array of enemies
-							var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
-							enemySpawner.enemiesList.splice(enemyIndex, 1);
-							
-							//Destroy the enemy
-							enemy.destroy();
-							
-							enemiesDestroyed += 1;
-							
-							if(enemiesDestroyed >= killsToWin){
-								endGame();
+							enemy.health -= tempProjectile.damage;
+							trace(enemy.health);
+							if(enemy.health <= 0){
+								var explosion:FireExplosion = new FireExplosion(enemy.x, enemy.y, mainGame);
+								addChild(explosion);
+								
+								explSound.play(0, 0, mainGame.effectsTransform);
+								currency += enemy.value;
+								textField.text = ("Coins: " + currency.toString());
+	
+								//Set the enemy to dead, so that they don't make a path to the base
+								enemy.isDead = true;
+								
+								//Find it's index and remove it from the array of enemies
+								var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
+								enemySpawner.enemiesList.splice(enemyIndex, 1);
+								
+								//Destroy the enemy
+								enemy.destroy();
+								
+								enemiesDestroyed += 1;
+								
+								if(enemiesDestroyed >= killsToWin){
+									endGame();
+								}
 							}
+							enemyHit = true;
 						}
-						enemyHit = true;
 					}
 				}
 				//If the enemy was not hit, check to see what object was

@@ -92,9 +92,9 @@ package com.game{
 			var menu:MainMenu = new MainMenu(this);
 			
 			menuMusic = assets.getSound("mainMenu");
-			musicTransform = new SoundTransform(.3);
+			musicTransform = new SoundTransform(.0);
 			
-			effectsTransform = new SoundTransform(.7);
+			effectsTransform = new SoundTransform(.0);
 			
 			musicChannel = menuMusic.play(0, 9999, musicTransform);
 			currentSong = "mainMenu";

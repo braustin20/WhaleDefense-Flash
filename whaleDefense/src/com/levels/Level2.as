@@ -316,7 +316,7 @@ package com.levels
 			var touchLoc:Point = event.touch.getLocation(newCatapult);
 			if(!paused && newCatapult.isReloaded){
 				launchSound.play(0, 0, mainGame.effectsTransform);
-				newCatapult.shootBullet(touchLoc);
+				newCatapult.shootBasic(touchLoc);
 			}
 		}
 		//This is typically called when a player bullet finishes it's animation

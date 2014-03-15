@@ -2,8 +2,8 @@ package com.game
 {	
 	import com.events.ProjectileFired;
 	
-	import starling.display.MovieClip;
 	import starling.core.Starling;
+	import starling.display.MovieClip;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -23,6 +23,7 @@ package com.game
 		public var speed:Number;
 		
 		public var damage:Number;
+		public var health:Number = 100;
 		public var value:Number = 100;
 		
 		public var canDamage:Boolean;

@@ -18,8 +18,13 @@ package com.game
 	{
 		private var graphics:Image;
 		
-		private var newPlayerProjectile:PlayerProjectile;		
-		private var reloadTime:Number = 500;
+		private var newPlayerProjectile:PlayerBasicProjectile;		
+		public var reloadTime:Number = 500;
+		
+		//Used for multi-shot
+		public var scatterNum:Number = 6;
+		public var scatterDist:Number = 75;
+		
 		public var isReloaded:Boolean = true;
 		private var timer:Timer;
 		
@@ -65,14 +70,14 @@ package com.game
 			isReloaded = true;
 			
 		}
-		public function shootBullet(touchLoc:Point):void{
+		public function shootBasic(touchLoc:Point):void{
 			if(isReloaded){
 				//Load a new image for the projectile on each shot
 				var projTexture:Texture = assetManager.getTexture("rockSm");
-				var projImage:Image = new Image(projTexture);
+		//		var projImage:Image = new Image(projTexture);
 				
 				//Add a newPlayerProjectile relative to this cannon
-				newPlayerProjectile = new PlayerProjectile(0, 0, projImage);
+				newPlayerProjectile = new PlayerBasicProjectile(0, 0, projTexture);
 				
 				addChild(newPlayerProjectile);
 				
@@ -89,8 +94,43 @@ package com.game
 				isReloaded = false;
 			}
 		}
+		public function shootMulti(touchLoc:Point):void{
+			if(isReloaded){
+				//Load a new image for the projectile on each shot
+				var projTexture:Texture = assetManager.getTexture("rockSm");
+				
+				var scatter:Object;
+				var randDir:Number
+				
+				//Create an array to store the scattered projectiles
+				var projArray:Array = new Array();
+				//Create an index to cycle through
+				var index:Number = 0;
+				//
+				for(index = 0; index < scatterNum; index++){
+					//Add a newPlayerProjectile relative to this cannon
+					projArray[index] = new PlayerScatterProjectile(0, 0, projTexture);
+					addChild(projArray[index]);
+					
+					scatter = generateScatter();
+					
+					//Create a timeline to hold the animations
+					var timeline:TimelineMax = new TimelineMax();
+					//Find the midpoint between the current position and target
+					var midPoint:Object = findMid(new Point(projArray[index].x, projArray[index].y), touchLoc);
+					//Add a tween which scales up and moves to the mid point
+					timeline.to(projArray[index], velocityToDuration(new Point(midPoint.x, midPoint.y), projArray[index]), {x:midPoint.x , y:midPoint.y , scaleX:2, scaleY:2, ease:Linear.easeNone});
+					//Add a tween directly afterwards which scales down and ends at the target
+					timeline.to(projArray[index], velocityToDuration(touchLoc, projArray[index]), {x:touchLoc.x + scatter.x, y:touchLoc.y + scatter.y, scaleX:0.8, scaleY:0.8, ease:Linear.easeInOut, onComplete:projArray[index].destroy, onCompleteParams:[true]});
+
+				}
+
+				timer.start();
+				isReloaded = false;
+			}
+		}
 		//Calculates duration in seconds from a given speed
-		private function velocityToDuration(p2:Point, proj:PlayerProjectile):Number{
+		private function velocityToDuration(p2:Point, proj:GenericProjectile):Number{
 			var duration:Number;
 			var p1:Point = new Point(proj.x, proj.y);
 			
@@ -102,6 +142,30 @@ package com.game
 		//Returns an object with an x and y property describing the middle of the two points passed in
 		private function findMid(p1:Point, p2:Point):Object{
 			return {x:p1.x + (p2.x - p1.x)/2, y:p1.y + (p2.y - p1.y)/2};
+		}
+		private function generateScatter():Object{
+			var randDir:Number;
+			var scatterResult:Object = new Object();
+			
+			randDir = Math.random();
+			if(randDir >= 0.5){
+				randDir = 1;
+			}
+			else{
+				randDir = -1;
+			}
+			
+			scatterResult.x = (Math.floor(Math.random() * scatterDist) + 10) * randDir;
+			randDir = Math.random();
+			if(randDir >= 0.5){
+				randDir = 1;
+			}
+			else{
+				randDir = -1;
+			}
+			scatterResult.y = (Math.floor(Math.random() * scatterDist) + 10) * randDir;
+			
+			return scatterResult;
 		}
 	}
 }
