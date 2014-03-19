@@ -1,27 +1,24 @@
-package com.game
+package com.projectiles
 {
 	import starling.display.Image;
 	import starling.textures.Texture;
 	
-	public class PlayerBasicProjectile extends GenericProjectile
+	public class PlayerScatterProjectile extends GenericProjectile
 	{
 		
-		public function PlayerBasicProjectile(xPos, yPos, sprite:Texture)
+		public function PlayerScatterProjectile(xPos, yPos, sprite:Texture)
 		{
 			this.x = xPos;
 			this.y = yPos;
 			this.alignPivot();
 			
-			this.type = "Basic";
-			
-			
+			this.type = "Scatter";
+			this.damage = 25;
 			
 			//Placeholder sprite
 			graphics = new Image(sprite);
 			//Move the sprite so that it's centered
 			graphics.alignPivot();
-			graphics.x = this.x;
-			graphics.y = this.y;
 			addChild(graphics);
 			
 		}

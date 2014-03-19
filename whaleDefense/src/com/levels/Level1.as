@@ -13,21 +13,26 @@ package com.levels
 	import com.game.EnemySpawner;
 	import com.game.FireExplosion;
 	import com.game.Game;
-	import com.game.GenericProjectile;
 	import com.game.LevelBottomLayer;
 	import com.game.LevelTopLayer;
 	import com.game.Shore;
 	import com.game.SplashExplosion;
 	import com.greensock.TweenMax;
+	import com.greensock.easing.Linear;
+	import com.projectiles.GenericProjectile;
+	import com.projectiles.PlayerPierceProjectile;
+	import com.projectiles.PlayerShrapnel;
 	import com.ui.GameOverMenu;
+	import com.ui.GameWonMenu;
 	import com.ui.PauseMenu;
+	import com.ui.ProjectileSwapper;
 	
 	import flash.events.TimerEvent;
 	import flash.geom.Point;
 	import flash.media.Sound;
+	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	
-	import flash.ui.Keyboard;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -39,7 +44,6 @@ package com.levels
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.utils.Color;
-	import com.ui.GameWonMenu;
 	
 	public class Level1 extends Sprite
 	{
@@ -47,6 +51,8 @@ package com.levels
 		
 		private var newCannon:Catapult;
 		public var selectedCannon:Catapult;
+		
+		private var projSwapper:ProjectileSwapper;
 		
 		public var buildZones:Array;
 		
@@ -56,6 +62,8 @@ package com.levels
 		public var pathArray:Array;
 		
 		private var isSpawning:Boolean;
+		
+		private var swapperActive:Boolean = false;
 		
 		private var textField:TextField;
 		public var currency:Number = 0;
@@ -76,6 +84,9 @@ package com.levels
 		private var explSound:Sound;
 		private var splashSound:Sound;
 		private var launchSound:Sound;
+		
+		private var explosion:FireExplosion;
+		private var enemyIndex:Number;
 		
 		private var mainGame:Game;
 		private var pauseMenu:PauseMenu;
@@ -149,6 +160,10 @@ package com.levels
 			//Set the last created cannon as the current selected 
 			//replace this later with mouse selection
 			selectedCannon = newCannon;
+			
+			//Place the swapper ui
+			projSwapper = new ProjectileSwapper(-40, 0, mainGame);
+			addChild(projSwapper);
 			
 			//The "score" keeper
 			textField = new TextField(220, 40, ("Coins: " + "0"), "Arial", 24, Color.RED);
@@ -238,11 +253,11 @@ package com.levels
 		}
 		public function onTouch(event:TouchEvent):void{
 			//Touch data when clicked or tapped down
-			var touchDown:Touch = event.getTouch(this, TouchPhase.ENDED);
+			var touchDown:Touch = event.getTouch(this, TouchPhase.BEGAN);
 			
 			
 			//If tapped or clicked, test fire the current cannon at the cursor location
-			if (touchDown && getBounds(this).containsPoint(touchDown.getLocation(this))){
+			if (touchDown && getBounds(this).containsPoint(touchDown.getLocation(this)) && !paused){
 				
 				//Get the pixel from the water layer, which is at the point of impact
 				var color:uint = this.bottomLayer.layerBmpData.getPixel32(touchDown.getLocation(this).x, touchDown.getLocation(this).y);
@@ -301,7 +316,7 @@ package com.levels
 			var touchLoc:Point = event.touch.getLocation(selectedCannon);
 			if(!paused && selectedCannon.isReloaded){
 				launchSound.play(0, 0, mainGame.effectsTransform);
-				selectedCannon.shootBasic(touchLoc);
+				selectedCannon.shootPierce(touchLoc);
 			}
 		}
 		//This is typically called when a player bullet finishes it's animation
@@ -321,20 +336,25 @@ package com.levels
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
 							enemy.health -= tempProjectile.damage;
-							trace(enemy.health);
+				
+							switch(tempProjectile.type){
+								case "Pierce" :
+									createPierces(enemy);
+									break;
+							}
 							if(enemy.health <= 0){
-								var explosion:FireExplosion = new FireExplosion(enemy.x, enemy.y, mainGame);
+								explosion = new FireExplosion(enemy.x, enemy.y, mainGame);
 								addChild(explosion);
 								
 								explSound.play(0, 0, mainGame.effectsTransform);
 								currency += enemy.value;
 								textField.text = ("Coins: " + currency.toString());
-	
+								
 								//Set the enemy to dead, so that they don't make a path to the base
 								enemy.isDead = true;
 								
 								//Find it's index and remove it from the array of enemies
-								var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
+								enemyIndex= enemySpawner.enemiesList.indexOf(enemy);
 								enemySpawner.enemiesList.splice(enemyIndex, 1);
 								
 								//Destroy the enemy
@@ -345,6 +365,7 @@ package com.levels
 								if(enemiesDestroyed >= killsToWin){
 									endGame();
 								}
+								
 							}
 							enemyHit = true;
 						}
@@ -368,6 +389,35 @@ package com.levels
 				}
 			}
 		}
+		private function createPierces(enemy:Enemy):void{
+			var exemptList:Array = new Array();
+			exemptList.push(enemy);
+			for(var i:Number = 0; i < 3; i++){
+				for each(var otherEnemy:Enemy in enemySpawner.enemiesList){
+					if(exemptList.indexOf(otherEnemy) == -1){
+						var p1:Point = new Point(enemy.x, enemy.y);
+						var p2:Point = new Point(otherEnemy.x, otherEnemy.y);
+						
+						if(Point.distance(p1, p2) < 300){
+							//		trace("distance: " + Point.distance(p1, p2));
+							trace("Point 1: " + p1);
+							trace("Point 2: " + p2);
+							exemptList.push(otherEnemy);
+							//Load a new image for the projectile on each shot
+							var projTexture:Texture = mainGame.assets.getTexture("rockSm");
+							
+							//Add a newPlayerProjectile relative to this cannon
+							var newShrapnel:PlayerShrapnel = new PlayerShrapnel(p1.x, p1.y, projTexture);
+							
+							addChild(newShrapnel);
+							
+							TweenMax.to(newShrapnel, 0.1, {x:p2.x, y:p2.y, scaleX:0.8, scaleY:0.8, ease:Linear.easeInOut, onComplete:newShrapnel.destroy, onCompleteParams:[true]});
+							break;
+						}
+					}
+				}
+			}
+		}
 		private function endGame():void{
 			var gameWonMenu:GameWonMenu = new GameWonMenu(mainGame);
 			addChild(gameWonMenu);
@@ -381,6 +431,30 @@ package com.levels
 			TweenMax.pauseAll();
 			trace("Game Won");
 		}
+		private function toggleSwapper():void{
+			if(!swapperActive){
+				paused = true;
+				for each(var ally:GenericAlly in allies){
+					ally.paused = true;
+				}
+				for each(var enemy:Enemy in enemySpawner.enemiesList){
+					enemy.graphics.pause();
+				}
+				TweenMax.pauseAll();
+				swapperActive = true;
+			}
+			else{
+				paused = false;
+				TweenMax.resumeAll();
+				for each(var pausedAlly:GenericAlly in allies){
+					pausedAlly.paused = false;
+				}
+				for each(var pausedEnemy:Enemy in enemySpawner.enemiesList){
+					pausedEnemy.graphics.play();
+				}
+				swapperActive = false;
+			}
+		}
 		protected function onButtonPressed(event:MenuButtonPressed):void{
 			switch(event.buttonName){
 				case "Resume" :
@@ -393,6 +467,9 @@ package com.levels
 						for each(var enemy:Enemy in enemySpawner.enemiesList){
 							enemy.graphics.play();
 						}
+					break;
+				case "Swapper":
+						toggleSwapper();
 					break;
 				case "Next Level":
 					mainGame.switchLevels("Level 2");

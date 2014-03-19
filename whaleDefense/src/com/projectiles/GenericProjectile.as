@@ -1,4 +1,4 @@
-package com.game
+package com.projectiles
 {
 	import com.events.ProjectileHit;
 	

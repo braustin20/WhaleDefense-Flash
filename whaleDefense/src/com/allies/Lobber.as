@@ -3,7 +3,7 @@ package com.allies
 	import com.game.Enemy;
 	import com.game.EnemySpawner;
 	import com.game.Game;
-	import com.game.PlayerBasicProjectile;
+	import com.projectiles.PlayerBasicProjectile;
 	import com.greensock.TimelineMax;
 	import com.greensock.easing.Linear;
 	

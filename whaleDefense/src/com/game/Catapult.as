@@ -12,14 +12,19 @@ package com.game
 	import starling.events.Event;
 	import starling.textures.Texture;
 	import starling.utils.AssetManager;
+	import com.projectiles.GenericProjectile;
+	import com.projectiles.PlayerBasicProjectile;
+	import com.projectiles.PlayerScatterProjectile;
+	import com.projectiles.PlayerPierceProjectile;
 	
 
 	public class Catapult extends Sprite
 	{
 		private var graphics:Image;
 		
-		private var newPlayerProjectile:PlayerBasicProjectile;		
-		public var reloadTime:Number = 500;
+		private var newPlayerProjectile:PlayerBasicProjectile;	
+		private var newPierceProjectile:PlayerPierceProjectile;
+		public var reloadTime:Number = 100;
 		
 		//Used for multi-shot
 		public var scatterNum:Number = 6;
@@ -74,7 +79,6 @@ package com.game
 			if(isReloaded){
 				//Load a new image for the projectile on each shot
 				var projTexture:Texture = assetManager.getTexture("rockSm");
-		//		var projImage:Image = new Image(projTexture);
 				
 				//Add a newPlayerProjectile relative to this cannon
 				newPlayerProjectile = new PlayerBasicProjectile(0, 0, projTexture);
@@ -129,8 +133,31 @@ package com.game
 				isReloaded = false;
 			}
 		}
+		public function shootPierce(touchLoc:Point):void{
+			if(isReloaded){
+				//Load a new image for the projectile on each shot
+				var projTexture:Texture = assetManager.getTexture("rockSm");
+				
+				//Add a newPlayerProjectile relative to this cannon
+				newPierceProjectile = new PlayerPierceProjectile(0, 0, projTexture);
+				
+				addChild(newPierceProjectile);
+				
+				//Create a timeline to hold the animations
+				var timeline:TimelineMax = new TimelineMax();
+				//Find the midpoint between the current position and target
+				var midPoint:Object = findMid(new Point(newPierceProjectile.x, newPierceProjectile.y), touchLoc);
+				//Add a tween which scales up and moves to the mid point
+				timeline.to(newPierceProjectile, velocityToDuration(new Point(midPoint.x, midPoint.y), newPierceProjectile), {x:midPoint.x , y:midPoint.y , scaleX:2, scaleY:2, ease:Linear.easeNone});
+				//Add a tween directly afterwards which scales down and ends at the target
+				timeline.to(newPierceProjectile, velocityToDuration(touchLoc, newPierceProjectile), {x:touchLoc.x, y:touchLoc.y, scaleX:0.8, scaleY:0.8, ease:Linear.easeInOut, onComplete:newPierceProjectile.destroy, onCompleteParams:[true]});
+
+				timer.start();
+				isReloaded = false;
+			}
+		}
 		//Calculates duration in seconds from a given speed
-		private function velocityToDuration(p2:Point, proj:GenericProjectile):Number{
+		public function velocityToDuration(p2:Point, proj:GenericProjectile):Number{
 			var duration:Number;
 			var p1:Point = new Point(proj.x, proj.y);
 			

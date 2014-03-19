@@ -1,6 +1,6 @@
 package com.events
 {	
-	import com.game.GenericProjectile;
+	import com.projectiles.GenericProjectile;
 	
 	import starling.events.Event;
 	

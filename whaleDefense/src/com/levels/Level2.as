@@ -13,12 +13,14 @@ package com.levels
 	import com.game.EnemySpawner;
 	import com.game.FireExplosion;
 	import com.game.Game;
-	import com.game.GenericProjectile;
 	import com.game.LevelBottomLayer;
 	import com.game.LevelTopLayer;
 	import com.game.Shore;
 	import com.game.SplashExplosion;
 	import com.greensock.TweenMax;
+	import com.greensock.easing.Linear;
+	import com.projectiles.GenericProjectile;
+	import com.projectiles.PlayerShrapnel;
 	import com.ui.GameOverMenu;
 	import com.ui.GameWonMenu;
 	import com.ui.PauseMenu;
@@ -317,7 +319,7 @@ package com.levels
 			var touchLoc:Point = event.touch.getLocation(newCatapult);
 			if(!paused && newCatapult.isReloaded){
 				launchSound.play(0, 0, mainGame.effectsTransform);
-				newCatapult.shootBasic(touchLoc);
+				newCatapult.shootPierce(touchLoc);
 			}
 		}
 		//This is typically called when a player bullet finishes it's animation
@@ -337,30 +339,39 @@ package com.levels
 					if(tempProjectile.graphics.getBounds(stage).intersects(enemy.hitBox.getBounds(stage))){
 						//Check to see if it has reached the shore or not yet
 						if(enemy.canDamage){
-							var explosion:FireExplosion = new FireExplosion(enemy.x, enemy.y, mainGame);
-							addChild(explosion);
+							enemy.health -= tempProjectile.damage;
 							
-							explSound.play(0, 0, mainGame.effectsTransform);
-							currency += enemy.value;
-							textField.text = ("Coins: " + currency.toString());
-
-							//Set the enemy to dead, so that they don't make a path to the base
-							enemy.isDead = true;
-							
-							//Find it's index and remove it from the array of enemies
-							var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
-							enemySpawner.enemiesList.splice(enemyIndex, 1);
-							
-							//Destroy the enemy
-							enemy.destroy();
-							
-							enemiesDestroyed += 1;
-							
-							if(enemiesDestroyed >= killsToWin){
-								endGame();
+							switch(tempProjectile.type){
+								case "Pierce" :
+									createPierces(enemy);
+									break;
 							}
+							if(enemy.health <= 0){
+								var explosion:FireExplosion = new FireExplosion(enemy.x, enemy.y, mainGame);
+								addChild(explosion);
+								
+								explSound.play(0, 0, mainGame.effectsTransform);
+								currency += enemy.value;
+								textField.text = ("Coins: " + currency.toString());
+	
+								//Set the enemy to dead, so that they don't make a path to the base
+								enemy.isDead = true;
+								
+								//Find it's index and remove it from the array of enemies
+								var enemyIndex:Number = enemySpawner.enemiesList.indexOf(enemy);
+								enemySpawner.enemiesList.splice(enemyIndex, 1);
+								
+								//Destroy the enemy
+								enemy.destroy();
+								
+								enemiesDestroyed += 1;
+								
+								if(enemiesDestroyed >= killsToWin){
+									endGame();
+								}
+							}
+							enemyHit = true;
 						}
-						enemyHit = true;
 					}
 				}
 				//If the enemy was not hit, check to see what object was
@@ -377,6 +388,35 @@ package com.levels
 					//If it didn't hit water, make it appear to hit ground
 					else{
 						//Rock ground hit here
+					}
+				}
+			}
+		}
+		private function createPierces(enemy:Enemy):void{
+			var exemptList:Array = new Array();
+			exemptList.push(enemy);
+			for(var i:Number = 0; i < 3; i++){
+				for each(var otherEnemy:Enemy in enemySpawner.enemiesList){
+					if(exemptList.indexOf(otherEnemy) == -1){
+						var p1:Point = new Point(enemy.x, enemy.y);
+						var p2:Point = new Point(otherEnemy.x, otherEnemy.y);
+						
+						if(Point.distance(p1, p2) < 300){
+							//		trace("distance: " + Point.distance(p1, p2));
+							trace("Point 1: " + p1);
+							trace("Point 2: " + p2);
+							exemptList.push(otherEnemy);
+							//Load a new image for the projectile on each shot
+							var projTexture:Texture = mainGame.assets.getTexture("rockSm");
+							
+							//Add a newPlayerProjectile relative to this cannon
+							var newShrapnel:PlayerShrapnel = new PlayerShrapnel(p1.x, p1.y, projTexture);
+							
+							addChild(newShrapnel);
+							
+							TweenMax.to(newShrapnel, 0.1, {x:p2.x, y:p2.y, scaleX:0.8, scaleY:0.8, ease:Linear.easeInOut, onComplete:newShrapnel.destroy, onCompleteParams:[true]});
+							break;
+						}
 					}
 				}
 			}
