@@ -441,6 +441,7 @@ package com.levels
 					enemy.graphics.pause();
 				}
 				TweenMax.pauseAll();
+				TweenMax.to(this.projSwapper, 0.1, {x:projSwapper.x + 100, y:projSwapper.y, ease:Linear.easeInOut});
 				swapperActive = true;
 			}
 			else{
@@ -452,6 +453,7 @@ package com.levels
 				for each(var pausedEnemy:Enemy in enemySpawner.enemiesList){
 					pausedEnemy.graphics.play();
 				}
+				TweenMax.to(this.projSwapper, 0.1, {x:projSwapper.x - 100, y:projSwapper.y, ease:Linear.easeInOut});
 				swapperActive = false;
 			}
 		}
